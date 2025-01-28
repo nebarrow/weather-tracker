@@ -1,6 +1,8 @@
 package com.nebarrow.weathertracker.config;
 
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -18,6 +20,15 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 public class SpringConfiguration implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
+
+    @Value("${db.url}")
+    private String dbUrl;
+
+    @Value("${db.username}")
+    private String dbUser;
+
+    @Value("${db.password}")
+    private String dbPassword;
 
     @Autowired
     public SpringConfiguration(ApplicationContext applicationContext) {
@@ -45,5 +56,13 @@ public class SpringConfiguration implements WebMvcConfigurer {
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         resolver.setTemplateEngine(templateEngine());
+    }
+
+    @Bean
+    public Flyway flyway() {
+        return Flyway.configure()
+                .dataSource(dbUrl, dbUser, dbPassword)
+                .locations("classpath:db/migrations")
+                .load();
     }
 }
