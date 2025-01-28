@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'war'
     id 'org.flywaydb.flyway' version '9.22.0'
-
 }
 
 group 'com.nebarrow'
@@ -16,8 +15,8 @@ ext {
     junitVersion = '5.10.0'
 }
 
-sourceCompatibility = '11'
-targetCompatibility = '11'
+sourceCompatibility = '21'
+targetCompatibility = '21'
 
 tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
@@ -37,8 +36,10 @@ dependencies {
     implementation("org.springframework:spring-core:6.2.0")
 
     implementation 'org.postgresql:postgresql:42.7.2'
-    implementation 'org.flywaydb:flyway-core:9.22.0'
+    implementation 'org.flywaydb:flyway-core:10.20.1'
 
+
+    compileOnly 'org.projectlombok:lombok:1.18.24'
     runtimeOnly 'org.flywaydb:flyway-database-postgresql:10.20.1'
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")

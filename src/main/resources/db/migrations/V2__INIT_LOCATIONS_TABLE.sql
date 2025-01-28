@@ -1,7 +1,7 @@
 CREATE TABLE Locations (
     ID SERIAL PRIMARY KEY,
     Name VARCHAR(128),
-    UserId VARCHAR(128) NOT NULL REFERENCES Users(ID),
+    UserId INTEGER NOT NULL REFERENCES Users(ID),
     Latitude DECIMAL(128),
     Longtitude DECIMAL(128)
 );
