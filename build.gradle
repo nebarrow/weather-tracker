@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'war'
     id 'org.flywaydb.flyway' version '9.22.0'
-
 }
 
 group 'com.nebarrow'
