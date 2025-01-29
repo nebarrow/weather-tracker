@@ -2,7 +2,6 @@ plugins {
     id 'java'
     id 'war'
     id 'org.flywaydb.flyway' version '10.20.1'
-
 }
 
 group 'com.nebarrow'
@@ -38,6 +37,11 @@ dependencies {
     implementation("org.springframework:spring-beans:6.2.0")
     implementation("org.springframework:spring-core:6.2.0")
     implementation 'org.springframework:spring-webmvc:6.1.14'
+    implementation 'org.springframework:spring-orm:6.2.0'
+    implementation 'org.springframework:spring-tx:6.2.0'
+    implementation 'org.springframework.data:spring-data-jpa:3.3.5'
+
+
     implementation 'org.thymeleaf:thymeleaf:3.0.11.RELEASE'
     implementation 'org.thymeleaf:thymeleaf-spring5:3.0.11.RELEASE'
 
