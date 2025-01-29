@@ -36,7 +36,7 @@ dependencies {
     implementation("org.springframework:spring-context:6.2.0")
     implementation("org.springframework:spring-beans:6.2.0")
     implementation("org.springframework:spring-core:6.2.0")
-    implementation 'org.springframework:spring-webmvc:6.1.14'
+    implementation 'org.springframework:spring-webmvc:6.2.0'
     implementation 'org.springframework:spring-orm:6.2.0'
     implementation 'org.springframework:spring-tx:6.2.0'
     implementation 'org.springframework.data:spring-data-jpa:3.3.5'
@@ -54,6 +54,7 @@ dependencies {
 
     implementation 'org.mapstruct:mapstruct:1.6.3'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
+
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
