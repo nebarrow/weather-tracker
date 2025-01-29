@@ -95,5 +95,11 @@ public class SpringConfiguration implements WebMvcConfigurer {
                 .addResourceLocations("classpath:/static/");
     }
 
+    @Bean(name = "transactionManager")
+    public PlatformTransactionManager platformTransactionManager() {
+        JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
+        jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
+        return jpaTransactionManager;
+    }
 
 }
