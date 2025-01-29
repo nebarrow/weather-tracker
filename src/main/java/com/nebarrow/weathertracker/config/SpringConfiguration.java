@@ -17,6 +17,8 @@ import org.thymeleaf.spring5.view.ThymeleafViewResolver;
 @Configuration
 @ComponentScan("com.nebarrow.weathertracker")
 @EnableWebMvc
+@EnableJpaRepositories("com.nebarrow.weathertracker.repository")
+@EnableTransactionManagement
 public class SpringConfiguration implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
