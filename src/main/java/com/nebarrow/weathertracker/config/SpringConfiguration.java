@@ -68,6 +68,7 @@ public class SpringConfiguration implements WebMvcConfigurer {
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         resolver.setTemplateEngine(templateEngine());
+        registry.viewResolver(resolver);
     }
 
     @Bean
@@ -89,5 +90,10 @@ public class SpringConfiguration implements WebMvcConfigurer {
     }
 
     @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler("/static/**")
+                .addResourceLocations("classpath:/static/");
+    }
+
 
 }
