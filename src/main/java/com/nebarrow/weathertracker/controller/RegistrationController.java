@@ -2,6 +2,7 @@ package com.nebarrow.weathertracker.controller;
 
 import com.nebarrow.weathertracker.dto.request.PostUser;
 import com.nebarrow.weathertracker.exception.PasswordAreDifferentException;
+import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.model.User;
 import com.nebarrow.weathertracker.service.UserService;
 import com.nebarrow.weathertracker.util.HidePasswordUtil;
@@ -28,11 +29,17 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public void register(@ModelAttribute("user") User user, @RequestParam("repeatPassword") String repeatPassword) {
+    public String register(@ModelAttribute("user") User user, @RequestParam("repeatPassword") String repeatPassword) {
         if (!user.getPassword().equals(repeatPassword)) {
             log.error("Password should be identical {}, {}", user.getPassword(), repeatPassword);
             throw new PasswordAreDifferentException("Passwords are different");
         }
+        try {
             service.create(new PostUser(user.getLogin(), HidePasswordUtil.hashPassword(user.getPassword())));
+        } catch (UserAlreadyExistsException e) {
+            log.error("User with login {} already exists", user.getLogin());
+            return "redirect:/sign-in-with-errors";
+        }
+        return "redirect:/index";
     }
 }
