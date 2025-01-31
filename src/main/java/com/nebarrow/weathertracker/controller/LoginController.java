@@ -7,15 +7,15 @@ import com.nebarrow.weathertracker.service.UserService;
 import com.nebarrow.weathertracker.util.HidePasswordUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
 public class LoginController {
+
     @Autowired
     private UserService userService;
 
@@ -26,19 +26,14 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(@ModelAttribute("user") User user) {
-        var foundUser = userService.findByLogin(user.getLogin());
-        if (foundUser.isEmpty()) {
-            log.error("User with login {} not found", user.getLogin());
-            throw new UserNotFoundException("User with login " + user.getLogin() + " not found");
-        }
-        var userDto = foundUser.get();
+    public ResponseEntity<String> login(@ModelAttribute User user) {
+        var foundUser = userService.findByLogin(user.getLogin())
+                .orElseThrow(() -> new UserNotFoundException("User not found"));
         try {
-            HidePasswordUtil.checkPassword(user.getPassword(), userDto.password());
+            HidePasswordUtil.checkPassword(user.getPassword(), foundUser.password());
+            return ResponseEntity.ok().build();
         } catch (InvalidPasswordException e) {
-            log.error("Password is incorrect for user with login {}", user.getLogin());
-            throw new InvalidPasswordException("Password is incorrect");
+            throw new InvalidPasswordException("Invalid password");
         }
-        return "redirect:/index";
     }
 }
