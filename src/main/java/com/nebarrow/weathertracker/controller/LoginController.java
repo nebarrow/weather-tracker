@@ -26,12 +26,12 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<String> login(@ModelAttribute User user) {
+    public String login(@ModelAttribute User user) {
         var foundUser = userService.findByLogin(user.getLogin())
                 .orElseThrow(() -> new UserNotFoundException("User not found"));
         try {
             HidePasswordUtil.checkPassword(user.getPassword(), foundUser.password());
-            return ResponseEntity.ok().build();
+            return "redirect:/find";
         } catch (InvalidPasswordException e) {
             throw new InvalidPasswordException("Invalid password");
         }

@@ -39,6 +39,6 @@ public class RegistrationController {
             log.error("User with login {} already exists", request.login());
             throw new UserAlreadyExistsException("User already exists");
         }
-        return "redirect:/";
+        return "redirect:/find";
     }
 }
