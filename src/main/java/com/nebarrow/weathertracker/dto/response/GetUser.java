@@ -1,4 +1,4 @@
 package com.nebarrow.weathertracker.dto.response;
 
-public record GetUser(String login) {
+public record GetUser(String login, String password) {
 }
