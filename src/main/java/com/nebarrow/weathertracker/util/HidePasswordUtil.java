@@ -1,14 +1,18 @@
 package com.nebarrow.weathertracker.util;
 
 
+import com.nebarrow.weathertracker.exception.InvalidPasswordException;
 import org.mindrot.jbcrypt.BCrypt;
 
 public class HidePasswordUtil {
+
     public static String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
-    public static boolean checkPassword(String password, String hashedPassword) {
-        return BCrypt.checkpw(password, hashedPassword);
+    public static void checkPassword(String password, String hashedPassword) {
+        if (!BCrypt.checkpw(password, hashedPassword)) {
+            throw new InvalidPasswordException("Password is incorrect");
+        }
     }
 }
