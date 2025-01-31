@@ -29,10 +29,10 @@
         <div class="col-12 col-lg-4 col-md-6 col-sm-12">
             <form th:action="@{/login}" th:method="post" th:object="${user}" id="login-form" class="mt-4">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="username" class="form-label">Username (Email)</label>
 
                     <div class="input-group has-validation">
-                        <input type="text" class="form-control is-invalid" id="username" th:field="*{login}" required/>
+                        <input type="text" class="form-control" id="username" th:field="*{login}" required/>
                         <div class="invalid-feedback" id="invalidUsernameFormat" style="display: none;">
                             The entered value does not match the email format.
                         </div>
