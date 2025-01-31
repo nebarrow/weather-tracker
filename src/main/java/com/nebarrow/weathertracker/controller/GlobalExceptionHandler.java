@@ -1,8 +1,10 @@
 package com.nebarrow.weathertracker.controller;
 
 import com.nebarrow.weathertracker.exception.InvalidPasswordException;
+import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.exception.UserNotFoundException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -20,6 +22,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleInvalidPassword(InvalidPasswordException e) {
         log.error("Invalid password", e);
         return ResponseEntity.badRequest().build();
+    }
+
+    @ExceptionHandler(UserAlreadyExistsException.class)
+    public ResponseEntity<String> handleUserAlreadyExists(UserAlreadyExistsException e) {
+        log.error("User already exists", e);
+        return ResponseEntity.status(HttpStatus.CONFLICT).build();
     }
 
 
