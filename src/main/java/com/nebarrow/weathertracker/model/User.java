@@ -1,9 +1,11 @@
 package com.nebarrow.weathertracker.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
 
 @Data
@@ -19,9 +21,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    @Email(message = "The entered value does not match the email format.")
     @Column(name = "Login", unique = true)
     private String login;
 
+    @Length(min = 5)
     @Column(name = "Password")
     private String password;
 }
