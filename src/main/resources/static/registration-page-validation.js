@@ -20,15 +20,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
       if (isEmailValid(username)) {
          try {
-            const response = await fetch('/check-username', {
+            const response = await fetch('/registration', {
                method: 'POST',
                headers: {
                   'Content-Type': 'application/json',
                },
-               body: username,
+               body: JSON.stringify({
+                  login: username,
+                  password: password.value,
+                  repeatPassword: repeatPassword.value,
+               })
             });
-            const data = await response.json();
-            if (data.exists) {
+            if (response.status === 409) {
                usernameField.classList.add("is-invalid");
                usernameError.style.display = "block";
                return false;
@@ -78,9 +81,11 @@ document.addEventListener("DOMContentLoaded", function () {
    form.addEventListener('submit', async function (event) {
       event.preventDefault();
 
-      const usernameValid = await checkUsername();
       const passwordsValid = checkPasswords();
+      if (!passwordsValid) return;
       const lengthValid = checkLength();
+      if (!lengthValid) return;
+      const usernameValid = await checkUsername();
 
       if (usernameValid && passwordsValid && lengthValid) {
          form.submit();
