@@ -39,7 +39,7 @@ public class RegistrationController {
             service.create(new PostUser(user.getLogin(), HidePasswordUtil.hashPassword(user.getPassword())));
         } catch (UserAlreadyExistsException e) {
             log.error("User with login {} already exists", user.getLogin());
-            return "redirect:/login";
+            throw new UserAlreadyExistsException("User already exists");
         }
         return "redirect:/index";
     }
