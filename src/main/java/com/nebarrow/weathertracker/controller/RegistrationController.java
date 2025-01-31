@@ -1,6 +1,7 @@
 package com.nebarrow.weathertracker.controller;
 
 import com.nebarrow.weathertracker.dto.request.PostUser;
+import com.nebarrow.weathertracker.dto.request.RegistrationRequest;
 import com.nebarrow.weathertracker.exception.PasswordAreDifferentException;
 import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.model.User;
@@ -11,10 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Slf4j
 @Controller
@@ -30,15 +28,15 @@ public class RegistrationController {
     }
 
     @PostMapping("/registration")
-    public String register(@Validated @ModelAttribute("user") User user, @RequestParam("repeatPassword") String repeatPassword) {
-        if (!user.getPassword().equals(repeatPassword)) {
-            log.error("Password should be identical {}, {}", user.getPassword(), repeatPassword);
+    public String register(@Validated @RequestBody RegistrationRequest request) {
+        if (!request.password().equals(request.repeatPassword())) {
+            log.error("Password should be identical {}, {}", request.password(), request.repeatPassword());
             throw new PasswordAreDifferentException("Passwords are different");
         }
         try {
-            service.create(new PostUser(user.getLogin(), HidePasswordUtil.hashPassword(user.getPassword())));
+            service.create(new PostUser(request.login(), request.password()));
         } catch (UserAlreadyExistsException e) {
-            log.error("User with login {} already exists", user.getLogin());
+            log.error("User with login {} already exists", request.login());
             throw new UserAlreadyExistsException("User already exists");
         }
         return "redirect:/index";
