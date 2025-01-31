@@ -19,7 +19,7 @@
 
     <div class="row justify-content-center">
         <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger" role="alert" id="somethingWrong" style="display: none;">
                 Invalid username or password.
             </div>
         </div>
@@ -27,14 +27,14 @@
 
     <div class="row justify-content-center">
         <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-            <form th:action="@{/login}" th:method="post" th:object="${user}" class="mt-4">
+            <form th:action="@{/login}" th:method="post" th:object="${user}" id="login-form" class="mt-4">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username</label>
 
                     <div class="input-group has-validation">
                         <input type="text" class="form-control is-invalid" id="username" th:field="*{login}" required/>
-                        <div class="invalid-feedback">
-                            Invalid email.
+                        <div class="invalid-feedback" id="invalidUsernameFormat" style="display: none;">
+                            The entered value does not match the email format.
                         </div>
                     </div>
                 </div>
@@ -51,6 +51,6 @@
         </div>
     </div>
 </div>
-
+<script src="../static/login-page-validation.js"></script>
 </body>
 </html>
