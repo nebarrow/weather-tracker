@@ -19,7 +19,7 @@
 
     <div class="row justify-content-center">
         <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-            <div class="alert alert-danger" role="alert">
+            <div id="passwordAlert" class="alert alert-danger" role="alert" style="display: none;">
                 Passwords don't match.
             </div>
         </div>
@@ -27,20 +27,23 @@
 
     <div class="row justify-content-center">
         <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-            <form id="registrationForm" th:action="@{/registration}" th:object="${user}" th:method="post" class="mt-4">
+            <form id="registrationForm" action="/registration" method="post" class="mt-4">
                 <div class="mb-3">
-                    <label for="username" class="form-label">Username</label>
+                    <label for="username" class="form-label">Username (Email)</label>
                     <div class="input-group has-validation">
-                        <input type="text" class="form-control is-invalid" id="username" name="username" th:field="*{login}" required/>
-                        <div class="invalid-feedback">
-                            Account with this email already exists.
+                        <input type="text" class="form-control" id="username" name="username" required/>
+                        <div class="invalid-feedback" id="invalidUsernameError" style="display: none;">
+                            Account with this email already exists. You can <a href="/login">sign in here</a>.
+                        </div>
+                        <div class="invalid-feedback" id="invalidUsernameFormat" style="display: none;">
+                            The entered value does not match the email format.
                         </div>
                     </div>
                 </div>
                 <div class="mb-3">
                     <label for="password" class="form-label">Password</label>
                     <div class="input-group has-validation">
-                        <input type="password" class="form-control is-invalid" id="password" th:field="*{password}" required value=""/>
+                        <input type="password" class="form-control" id="password" required name="password"/>
                         <div class="invalid-feedback">
                             Password must be at least 4 characters long.
                         </div>
@@ -48,7 +51,7 @@
                 </div>
                 <div class="mb-3">
                     <label for="repeat-password" class="form-label">Repeat password</label>
-                    <input type="password" class="form-control is-invalid" id="repeat-password" name="repeatPassword" required value=""/>
+                    <input type="password" class="form-control" id="repeat-password" name="repeatPassword" required/>
                     <div class="invalid-feedback" id="passwordMismatchError" style="display: none;">
                         Passwords do not match.
                     </div>
@@ -57,11 +60,13 @@
                 <input type="hidden" name="redirect_to" value="http://localhost/"/>
 
                 <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
-                <p class="mt-2 text-center">Already have an account? <a href="#">Sign in here</a></p>
+                <p class="mt-2 text-center">Already have an account? <a href="/login">Sign in here</a></p>
             </form>
         </div>
     </div>
 </div>
-<script src="../static/password_validation.js"></script>
+
+<script defer src="../static/registration-page-validation.js"></script>
+
 </body>
 </html>
