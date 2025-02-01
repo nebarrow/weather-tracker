@@ -6,6 +6,7 @@ import com.nebarrow.weathertracker.model.User;
 import com.nebarrow.weathertracker.service.UserService;
 import com.nebarrow.weathertracker.util.HidePasswordUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 
 @Slf4j
 @Controller
-public class LoginController {
+public class AuthenticationController {
 
     @Autowired
     private UserService userService;
