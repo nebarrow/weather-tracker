@@ -37,6 +37,10 @@ public class SessionService {
                 .map(sessionMapper::toDto);
     }
 
+    public void delete(UUID id) {
+        sessionRepository.deleteById(id);
+    }
+
     @Scheduled(fixedRate = 600000)
     @Transactional
     public void deleteExpiredSessions() {
