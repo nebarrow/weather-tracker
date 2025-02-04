@@ -15,14 +15,18 @@ import java.util.UUID;
 
 @Component
 public class AuthHandler implements HandlerInterceptor {
+
+    private final SessionService sessionService;
+
     @Autowired
-    @Lazy
-    private SessionService sessionService;
+    public AuthHandler(@Lazy SessionService sessionService) {
+        this.sessionService = sessionService;
+    }
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         var sessionId = Arrays.stream(request.getCookies())
-                .filter(cookie -> cookie.getName().equals("session_id"))
+                .filter(cookie -> cookie.getName().equals("sessionId"))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
