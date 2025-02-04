@@ -19,9 +19,7 @@
 
     <div class="row justify-content-center">
         <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-            <div class="alert alert-danger" role="alert" id="somethingWrong" style="display: none;">
-                Invalid username or password.
-            </div>
+            <div class="alert alert-danger" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
         </div>
     </div>
 
@@ -32,10 +30,10 @@
                     <label for="username" class="form-label">Username (Email)</label>
 
                     <div class="input-group has-validation">
-                        <input type="text" class="form-control" id="username" th:field="*{login}" required/>
-                        <div class="invalid-feedback" id="invalidUsernameFormat" style="display: none;">
-                            The entered value does not match the email format.
-                        </div>
+                        <input type="text" class="form-control" id="username"
+                               th:classappend="${#fields.hasErrors('login')} ? 'is-invalid' : ''"
+                               th:field="*{login}" required />
+                        <div class="invalid-feedback" th:if="${#fields.hasErrors('login')}" th:errors="*{login}"></div>
                     </div>
                 </div>
                 <div class="mb-3">
@@ -51,6 +49,5 @@
         </div>
     </div>
 </div>
-<script src="../static/login-page-validation.js"></script>
 </body>
 </html>
