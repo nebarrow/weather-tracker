@@ -4,7 +4,7 @@ package com.nebarrow.weathertracker.util;
 import com.nebarrow.weathertracker.exception.InvalidPasswordException;
 import org.mindrot.jbcrypt.BCrypt;
 
-public class HidePasswordUtil {
+public class HashPasswordUtil {
 
     public static String hashPassword(String password) {
         return BCrypt.hashpw(password, BCrypt.gensalt());
