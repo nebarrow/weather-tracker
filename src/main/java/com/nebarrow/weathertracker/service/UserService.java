@@ -14,25 +14,29 @@ import java.util.Optional;
 
 @Service
 public class UserService {
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+    private final UserMapper userMapper;
 
     @Autowired
-    private UserMapper userMapper;
+    public UserService(UserRepository userRepository, UserMapper userMapper) {
+        this.userRepository = userRepository;
+        this.userMapper = userMapper;
+    }
 
     public void create(PostUser postUser) {
-        if (findByLogin(postUser.login()).isEmpty()) {
-            userRepository.save(userMapper.toUser(postUser));
-        } else {
+        Optional<GetUser> existingUser = userRepository.findByLogin(postUser.login()).map(userMapper::toDto);
+        if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException("User with login " + postUser.login() + " already exists");
         }
+        userRepository.save(userMapper.toUser(postUser));
     }
 
     public Optional<GetUser> findById(int id) {
         return userRepository.findById(id).map(userMapper::toDto);
     }
 
-    public Optional<GetUser> findByLogin(String login) {
-        return userRepository.findByLogin(login).map(userMapper::toDto);
+    public GetUser findByLogin(String login) {
+        return userRepository.findByLogin(login).map(userMapper::toDto)
+                .orElseThrow(() -> new UserNotFoundException("User with login " + login + " not found"));
     }
 }
