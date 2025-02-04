@@ -3,7 +3,6 @@ package com.nebarrow.weathertracker.controller;
 import com.nebarrow.weathertracker.dto.request.PostUser;
 import com.nebarrow.weathertracker.dto.request.RegistrationRequest;
 import com.nebarrow.weathertracker.exception.PasswordAreDifferentException;
-import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.service.UserService;
 import com.nebarrow.weathertracker.util.HashPasswordUtil;
 import jakarta.validation.Valid;
@@ -20,31 +19,41 @@ import org.springframework.web.bind.annotation.PostMapping;
 @Controller
 public class RegistrationController {
 
+    private static final String SIGN_UP = "sign-up-with-errors";
+    private static final String MAIN_PAGE = "redirect:/";
+
+    private final UserService service;
+
     @Autowired
-    private UserService service;
+    public RegistrationController(UserService service) {
+        this.service = service;
+    }
 
     @GetMapping("/registration")
     public String showRegistrationForm(Model model) {
         model.addAttribute("registrationRequest", new RegistrationRequest("", "", ""));
-        return "sign-up-with-errors";
+        return SIGN_UP;
     }
 
     @PostMapping("/registration")
     public String register(@ModelAttribute @Valid RegistrationRequest request, BindingResult result, Model model) {
         if (result.hasErrors()) {
-            model.addAttribute("registrationRequest", request);
-            return "sign-up-with-errors";
+            return handleValidationErrors(request, model);
         }
+        registrationUser(request);
+        return MAIN_PAGE;
+    }
+
+    private String handleValidationErrors(RegistrationRequest request, Model model) {
+        model.addAttribute("registrationRequest", request);
+        return SIGN_UP;
+    }
+
+    private void registrationUser(RegistrationRequest request) {
         if (!request.password().equals(request.repeatPassword())) {
-            log.error("Password should be identical {}, {}", request.password(), request.repeatPassword());
+            log.error("Passwords are different: {}, {}", request.password(), request.repeatPassword());
             throw new PasswordAreDifferentException("Passwords are different");
         }
-        try {
-            service.create(new PostUser(request.username(), HashPasswordUtil.hashPassword(request.password())));
-        } catch (UserAlreadyExistsException e) {
-            log.error("User with login {} already exists", request.username());
-            throw new UserAlreadyExistsException("User already exists");
-        }
-        return "redirect:/";
+        service.create(new PostUser(request.username(), HashPasswordUtil.hashPassword(request.password())));
     }
 }
