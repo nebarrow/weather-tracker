@@ -21,11 +21,11 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
-    @Email(message = "The entered value does not match the email format.")
+    @Email(message = "The entered value does not match the email format")
     @Column(name = "Login", unique = true)
     private String login;
 
-    @Length(min = 5)
+    @Length(min = 5, message = "The password must be at least 5 characters long")
     @Column(name = "Password")
     private String password;
 }
