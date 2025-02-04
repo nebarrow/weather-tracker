@@ -1,4 +1,12 @@
 package com.nebarrow.weathertracker.dto.request;
 
-public record RegistrationRequest(String login, String password, String repeatPassword) {
+import jakarta.validation.constraints.Email;
+import org.hibernate.validator.constraints.Length;
+
+public record RegistrationRequest(
+        @Email(message = "The entered value does not match the email format")
+        String username,
+        @Length(min = 5, message = "The password must be at least 5 characters long")
+        String password,
+        String repeatPassword) {
 }
