@@ -25,7 +25,6 @@ public class User {
     @Column(name = "Login", unique = true)
     private String login;
 
-    @Length(min = 5, message = "The password must be at least 5 characters long")
     @Column(name = "Password")
     private String password;
 }
