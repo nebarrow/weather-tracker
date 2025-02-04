@@ -25,42 +25,63 @@ import java.util.UUID;
 @Controller
 public class AuthenticationController {
 
-    @Autowired
-    private UserService userService;
+    private static final String MAIN_PAGE = "redirect:/";
+    private static final String SIGN_IN = "sign-in-with-errors";
+    private static final String LOGIN = "redirect:/login";
+    private final UserService userService;
+    private final SessionService sessionService;
 
     @Autowired
-    private SessionService sessionService;
+    public AuthenticationController(UserService userService, SessionService sessionService) {
+        this.userService = userService;
+        this.sessionService = sessionService;
+    }
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
-        model.addAttribute("user", new User());
-        return "sign-in-with-errors";
+        return handleValidationErrors(new User(), model);
     }
 
     @PostMapping("/login")
-    public String login(@CookieValue String sessionId,
+    public String login(@CookieValue(name = "sessionId", defaultValue = "") String sessionId,
                         @ModelAttribute @Valid User user,
                         BindingResult result,
                         Model model,
                         HttpServletResponse response) {
         if (result.hasErrors()) {
-            model.addAttribute("user", user);
-            return "sign-in-with-errors";
+            return handleValidationErrors(user, model);
         }
         if (sessionId != null && !sessionId.isEmpty()) {
-            return "redirect:/";
+            return MAIN_PAGE;
         }
-        var foundUser = userService.findByLogin(user.getLogin())
-                .orElseThrow(() -> new UserNotFoundException("User not found"));
-        try {
-            HashPasswordUtil.checkPassword(user.getPassword(), foundUser.password());
-            sessionId = String.valueOf(sessionService.create(foundUser.id()));
-            var cookie = CookieUtil.set(UUID.fromString(sessionId));
+        return authenticateUser(user, response);
+    }
+
+    @GetMapping("/logout")
+    public String logout(@CookieValue(name = "session_id", defaultValue = "") String sessionId, HttpServletResponse response) {
+        if (sessionId != null && !sessionId.isEmpty()) {
+            sessionService.delete(UUID.fromString(sessionId));
+            var cookie = CookieUtil.delete(UUID.fromString(sessionId));
             response.addCookie(cookie);
-            return "redirect:/";
-        } catch (InvalidPasswordException e) {
-            log.error("Invalid password for user: {} with password: {}", user.getLogin(), user.getPassword());
-            throw new InvalidPasswordException("Invalid password");
         }
+        return LOGIN;
+    }
+
+    private String handleValidationErrors(User user, Model model) {
+        model.addAttribute("user", user);
+        return SIGN_IN;
+    }
+
+    private String authenticateUser(User user, HttpServletResponse response) {
+        var foundUser = userService.findByLogin(user.getLogin());
+        HashPasswordUtil.checkPassword(user.getPassword(), foundUser.password());
+        createSessionAndAddCookie(foundUser.id(), response);
+        return MAIN_PAGE;
+    }
+
+    private void createSessionAndAddCookie(int userId, HttpServletResponse response) {
+        String sessionId = String.valueOf(sessionService.create(userId));
+        var cookie = CookieUtil.set(UUID.fromString(sessionId));
+        response.addCookie(cookie);
     }
 }
