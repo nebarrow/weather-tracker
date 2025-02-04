@@ -25,7 +25,7 @@ public class HomeController {
     private UserService userService;
 
     @GetMapping("/")
-    public String showFindForm(@CookieValue(name = "session_id", defaultValue = "") String sessionId, Model model) {
+    public String showFindForm(@CookieValue(name = "sessionId", defaultValue = "") String sessionId, Model model) {
         var session = sessionService.findById(UUID.fromString(sessionId));
         var locations = locationService.findByUserId(session.get().userId());
         var userLogin = userService.findById(session.get().userId()).get().login();
