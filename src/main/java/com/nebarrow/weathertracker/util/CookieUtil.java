@@ -10,7 +10,7 @@ import java.util.UUID;
 public class CookieUtil {
 
     public static Cookie set(UUID id) {
-        Cookie cookie = new Cookie("session_id", id.toString());
+        Cookie cookie = new Cookie("sessionId", id.toString());
         cookie.setMaxAge(30 * 60);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
@@ -24,5 +24,12 @@ public class CookieUtil {
             }
         }
         return false;
+    }
+
+    public static Cookie delete(UUID sessionId) {
+        Cookie cookie = new Cookie("sessionId", sessionId.toString());
+        cookie.setMaxAge(0);
+        cookie.setPath("/");
+        return cookie;
     }
 }
