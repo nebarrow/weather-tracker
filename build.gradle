@@ -40,6 +40,7 @@ dependencies {
     implementation 'org.springframework:spring-orm:6.2.0'
     implementation 'org.springframework:spring-tx:6.2.0'
     implementation 'org.springframework.data:spring-data-jpa:3.3.5'
+    implementation 'org.springframework.boot:spring-boot-starter-webflux:3.1.2'
 
 
     implementation 'org.thymeleaf:thymeleaf:3.1.2.RELEASE'
