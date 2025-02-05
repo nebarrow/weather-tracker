@@ -15,10 +15,15 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.reactive.function.client.ClientRequest;
+import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
+
+import java.net.URI;
 
 @Configuration
 @ComponentScan("com.nebarrow.weathertracker")
@@ -100,6 +105,21 @@ public class SpringConfiguration implements WebMvcConfigurer {
         JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
         return jpaTransactionManager;
+    }
+
+    @Bean
+    public WebClient webClient(@Value("${openweather.api.key}") String apiKey) {
+        return WebClient.builder()
+                .baseUrl("https://api.openweathermap.org/data/2.5")
+                .filter(((request, next) -> {
+                    URI uri = UriComponentsBuilder.fromUri(request.url())
+                            .queryParam("appid", apiKey)
+                            .build()
+                            .toUri();
+                    ClientRequest newRequest = ClientRequest.from(request).url(uri).build();
+                    return next.exchange(newRequest);
+                }))
+                .build();
     }
 
     @Override
