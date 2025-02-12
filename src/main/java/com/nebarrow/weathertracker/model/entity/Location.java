@@ -1,4 +1,4 @@
-package com.nebarrow.weathertracker.model;
+package com.nebarrow.weathertracker.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -22,7 +22,8 @@ public class Location {
     @Column(name = "Name")
     private String name;
 
-    @JoinColumn(name = "UserId", referencedColumnName = "ID")
+    @Column(name = "UserId")
+    @JoinColumn(referencedColumnName = "ID")
     private int userId;
 
     @Column(name = "Latitude")
