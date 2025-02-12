@@ -10,13 +10,15 @@
 
 <nav class="navbar navbar-light bg-light">
     <div class="container-fluid">
-        <a class="navbar-brand" href="#">
+        <a class="navbar-brand" th:href="@{/}">
             <img src="../static/images/weather-app.png" alt="" width="30" height="24" class="d-inline-block align-text-top">
             Weather Tracker
         </a>
         <div class="d-flex align-items-center">
-            <span class="navbar-text me-3">zhukovsd</span>
-            <button class="btn btn-outline-danger">Sign out</button>
+            <form th:action="@{/logout}" th:object="${user}" th:method="get">
+                <span class="navbar-text me-3" th:text="${user.login()}"></span>
+                <button class="btn btn-outline-danger" type="submit">Sign out</button>
+            </form>
         </div>
     </div>
 </nav>
@@ -24,89 +26,49 @@
 <section id="page-content">
     <div class="container mt-4">
         <div class="d-flex my-4">
-            <div class="input-group location-search-input-group me-3">
-                <input class="form-control" type="text" name="name" placeholder="Enter location" value="San Francisco"
-                       required>
+            <form th:action="@{/search}" th:method="get" class="input-group location-search-input-group me-3">
+                <input class="form-control" type="text" name="name" placeholder="Enter location" required>
                 <button class="btn btn-outline-secondary btn-sm clear-input-button" type="button"
                         onclick="this.previousElementSibling.value=''">
                     &times;
                 </button>
-            </div>
-            <button class="btn btn-outline-success">Search</button>
+                <button class="btn btn-outline-success" type="submit">Search</button>
+            </form>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
         </div>
 
         <div>
-            <h2>Locations:</h2>
-            <div class="row">
-                <div class="col-12 col-lg-3 col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">San Francisco</h5>
-                            <p class="card-text mb-1">Latitude: 37.7790262</p>
-                            <p class="card-text mb-1">Longitude: -122.419906</p>
-                            <p class="card-text mb-1">Country: US</p>
-                            <p class="card-text mb-3">State: California</p>
-                            <div class="mt-auto">
-                                <button class="btn btn-primary w-100">Add</button>
+            <div th:if="${weather.isEmpty()}" class="alert alert-info" role="alert">
+                No such location found :(
+            </div>
+            <div class="row" th:if="${!weather.isEmpty()}">
+                <h2>Locations:</h2>
+                <div class="col-12 col-lg-3 col-md-6 mb-4" th:each="weath : ${weather}">
+                    <form th:action="@{/search}" th:method="post">
+                        <div class="card h-100">
+                            <div class="card-body d-flex flex-column">
+                                <h5 class="card-title" th:text="${weath.name()}"></h5>
+                                <p class="card-text mb-1" th:text="'Latitude: ' + ${weath.latitude()}"></p>
+                                <p class="card-text mb-1" th:text="'Longitude: ' + ${weath.longitude()}"></p>
+                                <p class="card-text mb-1" th:text="'Country: ' + ${weath.country()}"></p>
+                                <p class="card-text mb-3" th:if="${weath.state() != null}" th:text="'State: ' + ${weath.state()}"></p>
+                                <div class="mt-auto">
+                                    <input type="hidden" name="name" th:value="${weath.name()}">
+                                    <input type="hidden" name="latitude" th:value="${weath.latitude()}">
+                                    <input type="hidden" name="longitude" th:value="${weath.longitude()}">
+                                        <button th:if="${weath.isAdded}" class="btn btn-primary w-100" disabled>
+                                            Added
+                                        </button>
+                                        <button th:unless="${weath.isAdded}" class="btn btn-primary w-100">
+                                            Add
+                                        </button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-3 col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">San Francisco</h5>
-                            <p class="card-text mb-1">Latitude: 8.5050281</p>
-                            <p class="card-text mb-1">Longitude: 125.9771179</p>
-                            <p class="card-text mb-1">Country: PH</p>
-                            <p class="card-text mb-3">State: Agusan del Sur</p>
-                            <div class="mt-auto">
-                                <button class="btn btn-primary w-100">Add</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-3 col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">San Francisco</h5>
-                            <p class="card-text mb-1">Latitude: -31.4249815</p>
-                            <p class="card-text mb-1">Longitude: -62.0840299</p>
-                            <p class="card-text mb-1">Country: AR</p>
-                            <p class="card-text mb-3">State: Córdoba</p>
-                            <div class="mt-auto">
-                                <button class="btn btn-primary w-100">Add</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-3 col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">San Francisco</h5>
-                            <p class="card-text mb-1">Latitude: 8.2467485</p>
-                            <p class="card-text mb-1">Longitude: -80.9721357</p>
-                            <p class="card-text mb-1">Country: PA</p>
-                            <p class="card-text mb-3">State: Veraguas</p>
-                            <div class="mt-auto">
-                                <button class="btn btn-primary w-100">Add</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-12 col-lg-3 col-md-6 mb-4">
-                    <div class="card h-100">
-                        <div class="card-body d-flex flex-column">
-                            <h5 class="card-title">San Francisco</h5>
-                            <p class="card-text mb-1">Latitude: 5.26902235</p>
-                            <p class="card-text mb-1">Longitude: -72.77388372073908</p>
-                            <p class="card-text mb-1">Country: CO</p>
-                            <p class="card-text mb-3">State: Casanare</p>
-                            <div class="mt-auto">
-                                <button class="btn btn-primary w-100">Add</button>
-                            </div>
-                        </div>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
@@ -118,6 +80,5 @@
         <span>© Weather Viewer, project from <a href="https://zhukovsd.github.io/java-backend-learning-course/">zhukovsd/java-backend-learning-course</a> roadmap.</span>
     </div>
 </footer>
-
 </body>
 </html>
