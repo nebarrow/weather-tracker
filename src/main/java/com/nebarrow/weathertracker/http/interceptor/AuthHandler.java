@@ -1,7 +1,8 @@
-package com.nebarrow.weathertracker.interceptor;
+package com.nebarrow.weathertracker.http.interceptor;
 
 
 import com.nebarrow.weathertracker.service.SessionService;
+import com.nebarrow.weathertracker.util.CookieUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,15 +26,39 @@ public class AuthHandler implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        var sessionId = Arrays.stream(request.getCookies())
+        String currentUrl = request.getRequestURI();
+
+        if (currentUrl.equals(request.getContextPath() + "/login")) {
+            return true;
+        }
+
+        var cookies = request.getCookies();
+        if (cookies == null) {
+            response.sendRedirect(request.getContextPath() + "/login");
+            return false;
+        }
+
+        var sessionId = Arrays.stream(cookies)
                 .filter(cookie -> cookie.getName().equals("sessionId"))
                 .map(Cookie::getValue)
                 .findFirst()
                 .orElse(null);
-        if (sessionId == null || sessionService.findById(UUID.fromString(sessionId)).isEmpty()) {
+
+
+        if (sessionId == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return false;
         }
+        var session = sessionService.findById(UUID.fromString(sessionId));
+        if (session == null) {
+            var cookie = CookieUtil.delete(UUID.fromString(sessionId));
+            response.addCookie(cookie);
+            response.sendRedirect(request.getContextPath() + "/login");
+            return false;
+        }
+
+        request.setAttribute("userId", session.userId());
         return true;
     }
+
 }
