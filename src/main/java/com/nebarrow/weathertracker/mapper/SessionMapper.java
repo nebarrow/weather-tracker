@@ -1,7 +1,7 @@
 package com.nebarrow.weathertracker.mapper;
 
 import com.nebarrow.weathertracker.dto.response.SessionResponse;
-import com.nebarrow.weathertracker.model.Session;
+import com.nebarrow.weathertracker.model.entity.Session;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
