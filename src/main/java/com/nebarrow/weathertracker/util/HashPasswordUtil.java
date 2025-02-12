@@ -12,7 +12,7 @@ public class HashPasswordUtil {
 
     public static void checkPassword(String password, String hashedPassword) {
         if (!BCrypt.checkpw(password, hashedPassword)) {
-            throw new InvalidPasswordException("Password is incorrect");
+            throw new InvalidPasswordException(password.formatted("Password {} is incorrect"));
         }
     }
 }
