@@ -64,7 +64,7 @@ public class SpringConfiguration implements WebMvcConfigurer {
     public SpringResourceTemplateResolver templateResolver() {
         SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
         templateResolver.setApplicationContext(applicationContext);
-        templateResolver.setPrefix("classpath:/templates/");
+        templateResolver.setPrefix("/WEB-INF/view/");
         templateResolver.setSuffix(".html");
         return templateResolver;
     }
@@ -103,6 +103,7 @@ public class SpringConfiguration implements WebMvcConfigurer {
                 .dataSource(dbUrl, dbUser, dbPassword)
                 .locations("classpath:db/migrations")
                 .load();
+        flyway.repair();
         flyway.migrate();
 
         return flyway;
@@ -120,8 +121,8 @@ public class SpringConfiguration implements WebMvcConfigurer {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/static/**")
-                .addResourceLocations("classpath:/static/");
+        registry.addResourceHandler("/resources/**")
+                .addResourceLocations("/resources/");
     }
 
     @Bean(name = "transactionManager")
@@ -150,6 +151,6 @@ public class SpringConfiguration implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authenticationHandler)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/login", "/registration", "/static/**");
+                .excludePathPatterns("/login", "/registration", "/resources/**");
     }
 }
