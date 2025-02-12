@@ -1,0 +1,3 @@
+ALTER TABLE Locations
+ALTER COLUMN Latitude TYPE DECIMAL(4, 2),
+    ALTER COLUMN longtitude TYPE DECIMAL(4, 2);
