@@ -1,6 +1,6 @@
 package com.nebarrow.weathertracker.config;
 
-import com.nebarrow.weathertracker.interceptor.AuthHandler;
+import com.nebarrow.weathertracker.http.interceptor.AuthHandler;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
@@ -18,11 +19,13 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.servlet.config.annotation.*;
+
 import org.springframework.web.util.UriComponentsBuilder;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
 import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
+import javax.sql.DataSource;
 import java.net.URI;
 
 @Configuration
@@ -34,6 +37,7 @@ import java.net.URI;
 public class SpringConfiguration implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
+    private final AuthHandler authenticationHandler;
 
     @Value("${db.url}")
     private String dbUrl;
@@ -41,15 +45,19 @@ public class SpringConfiguration implements WebMvcConfigurer {
     @Value("${db.username}")
     private String dbUser;
 
+    @Value("${db.driver}")
+    private String dbDriver;
+
     @Value("${db.password}")
     private String dbPassword;
 
-    @Autowired
-    private AuthHandler authenticationHandler;
+    @Value("${openweather.api}")
+    private String apiKey;
 
     @Autowired
-    public SpringConfiguration(ApplicationContext applicationContext) {
+    public SpringConfiguration(ApplicationContext applicationContext, AuthHandler authenticationHandler) {
         this.applicationContext = applicationContext;
+        this.authenticationHandler = authenticationHandler;
     }
 
     @Bean
@@ -73,24 +81,40 @@ public class SpringConfiguration implements WebMvcConfigurer {
     public void configureViewResolvers(ViewResolverRegistry registry) {
         ThymeleafViewResolver resolver = new ThymeleafViewResolver();
         resolver.setTemplateEngine(templateEngine());
+        resolver.setCharacterEncoding("UTF-8");
         registry.viewResolver(resolver);
     }
 
     @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+
+        dataSource.setDriverClassName(dbDriver);
+        dataSource.setUrl(dbUrl);
+        dataSource.setUsername(dbUser);
+        dataSource.setPassword(dbPassword);
+
+        return dataSource;
+    }
+
+    @Bean
     public Flyway flyway() {
-        return Flyway.configure()
+        Flyway flyway = Flyway.configure()
                 .dataSource(dbUrl, dbUser, dbPassword)
                 .locations("classpath:db/migrations")
                 .load();
+        flyway.migrate();
+
+        return flyway;
+
     }
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
-        emf.setDataSource(flyway().getConfiguration().getDataSource());
+        emf.setDataSource(dataSource());
         emf.setPackagesToScan("com.nebarrow.weathertracker.model");
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
-        emf.afterPropertiesSet();
         return emf;
     }
 
@@ -108,9 +132,9 @@ public class SpringConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    public WebClient webClient(@Value("${openweather.api.key}") String apiKey) {
+    public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("https://api.openweathermap.org/data/2.5")
+                .baseUrl("https://api.openweathermap.org/")
                 .filter(((request, next) -> {
                     URI uri = UriComponentsBuilder.fromUri(request.url())
                             .queryParam("appid", apiKey)
