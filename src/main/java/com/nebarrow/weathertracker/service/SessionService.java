@@ -21,23 +21,25 @@ public class SessionService {
     private final SessionMapper sessionMapper;
     private final SessionRepository sessionRepository;
 
-    @Autowired
-    private SessionRepository sessionRepository;
-
+    @Transactional
     public UUID create(int userId) {
-        var session = new Session();
-        session.setId(UUID.randomUUID());
-        session.setUserId(userId);
-        session.setExpiresAt(LocalDateTime.now().plusMinutes(30));
+        var session = Session.builder()
+                .id(UUID.randomUUID())
+                .userId(userId)
+                .expiresAt(LocalDateTime.now().plusMinutes(30))
+                .build();
         sessionRepository.save(session);
         return session.getId();
     }
 
-    public Optional<SessionResponse> findById(UUID id) {
+    @Transactional
+    public SessionResponse findById(UUID id) {
         return sessionRepository.findById(id)
-                .map(sessionMapper::toDto);
+                .map(sessionMapper::toDto)
+                .orElse(null);
     }
 
+    @Transactional
     public void delete(UUID id) {
         sessionRepository.deleteById(id);
     }
