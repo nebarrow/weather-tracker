@@ -6,13 +6,14 @@ import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.exception.UserNotFoundException;
 import com.nebarrow.weathertracker.mapper.UserMapper;
 import com.nebarrow.weathertracker.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import javax.swing.text.html.Option;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
@@ -28,7 +29,8 @@ public class UserService {
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException("User with login " + postUser.login() + " already exists");
         }
-        userRepository.save(userMapper.toUser(postUser));
+        var user = userMapper.toUser(postUser);
+        return userMapper.toDto(userRepository.save(user));
     }
 
     public Optional<GetUser> findById(int id) {
