@@ -1,11 +1,9 @@
-package com.nebarrow.weathertracker.controller;
+package com.nebarrow.weathertracker.http.advice;
 
 import com.nebarrow.weathertracker.dto.request.RegistrationRequest;
-import com.nebarrow.weathertracker.exception.InvalidPasswordException;
-import com.nebarrow.weathertracker.exception.PasswordAreDifferentException;
 import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.exception.UserNotFoundException;
-import com.nebarrow.weathertracker.model.User;
+import com.nebarrow.weathertracker.model.entity.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -13,24 +11,12 @@ import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class UserAdvice {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ModelAndView handleUserNotFound(UserNotFoundException e) {
         log.error("User not found {}", e.getMessage());
-        return createModelAndView("sign-in-with-errors", "Invalid username or password", new User());
-    }
-
-    @ExceptionHandler(InvalidPasswordException.class)
-    public ModelAndView handleInvalidPassword(InvalidPasswordException e) {
-        log.error("Invalid password {}", e.getMessage());
-        return createModelAndView("sign-in-with-errors", "Invalid username or password", new User());
-    }
-
-    @ExceptionHandler(PasswordAreDifferentException.class)
-    public ModelAndView handlePasswordAreDifferent(PasswordAreDifferentException e) {
-        log.error("Passwords are different {}", e.getMessage());
-        return createModelAndView("sign-up-with-errors", "Passwords are different", new RegistrationRequest("", "", ""));
+        return createModelAndView("sign-in-with-errors", "Invalid login or password", new User());
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
