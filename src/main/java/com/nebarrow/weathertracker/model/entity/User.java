@@ -1,11 +1,10 @@
-package com.nebarrow.weathertracker.model;
+package com.nebarrow.weathertracker.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.stereotype.Component;
 
 @Data
