@@ -2,14 +2,11 @@ package com.nebarrow.weathertracker.model.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.springframework.stereotype.Component;
+import lombok.*;
 
-@Data
+@Setter
+@Getter
 @Entity
-@Component
 @Table(name = "Users")
 @NoArgsConstructor
 @AllArgsConstructor
