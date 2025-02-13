@@ -17,6 +17,7 @@ ext {
     junitVersion = '5.10.0'
 }
 
+
 sourceCompatibility = '21'
 targetCompatibility = '21'
 
@@ -25,7 +26,7 @@ tasks.withType(JavaCompile).configureEach {
 }
 
 dependencies {
-    compileOnly('jakarta.servlet:jakarta.servlet-api:6.0.0')
+    implementation('jakarta.servlet:jakarta.servlet-api:6.0.0')
     implementation 'org.antlr:antlr4-runtime:4.13.0'
     // Hibernate
     implementation('org.hibernate:hibernate-core:6.3.1.Final')
@@ -62,6 +63,9 @@ dependencies {
     implementation 'org.mapstruct:mapstruct:1.6.3'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.6.3'
 
+    testImplementation 'org.mockito:mockito-core:2.1.0'
+    testImplementation 'org.springframework:spring-test:6.1.14'
+    implementation('com.h2database:h2:2.2.220')
 
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
@@ -69,4 +73,5 @@ dependencies {
 
 test {
     useJUnitPlatform()
+    jvmArgs '-Dspring.profiles.active=application-test', '-ea'
 }

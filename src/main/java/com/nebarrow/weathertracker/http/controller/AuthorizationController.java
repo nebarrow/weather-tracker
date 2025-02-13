@@ -36,6 +36,7 @@ public class AuthorizationController {
                         HttpServletResponse response) {
         model.addAttribute("postUser", postUser);
 
+        
         if (result.hasErrors()) {
             return redirectToSignInPage(postUser, model);
         }
