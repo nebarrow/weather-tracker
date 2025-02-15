@@ -4,6 +4,7 @@ import com.nebarrow.weathertracker.http.interceptor.AuthHandler;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,6 +34,7 @@ import java.net.URI;
 @EnableJpaRepositories("com.nebarrow.weathertracker.repository")
 @EnableTransactionManagement
 @EnableScheduling
+@EntityScan("com.nebarrow.weathertracker.model.entity")
 public class SpringConfiguration implements WebMvcConfigurer {
 
     private final ApplicationContext applicationContext;
