@@ -1,6 +1,7 @@
 package com.nebarrow.weathertracker.config;
 
 import com.nebarrow.weathertracker.http.interceptor.AuthHandler;
+import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
@@ -26,14 +27,12 @@ import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 import javax.sql.DataSource;
 import java.net.URI;
-import java.util.Properties;
 
 @Configuration
 @ComponentScan("com.nebarrow.weathertracker")
 @EnableWebMvc
 @EnableJpaRepositories("com.nebarrow.weathertracker.repository")
 @EnableTransactionManagement
-@PropertySource("classpath:${spring.profiles.active}.properties")
 @EnableScheduling
 public class SpringConfiguration implements WebMvcConfigurer {
 
@@ -98,16 +97,6 @@ public class SpringConfiguration implements WebMvcConfigurer {
         return dataSource;
     }
 
-    private Properties hibernateProperties() {
-        Properties properties = new Properties();
-        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
-        properties.put("hibernate.show_sql", "true");
-        properties.put("hibernate.hbm2ddl.auto", "create-drop");
-
-        return properties;
-    }
-
-
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
@@ -127,7 +116,6 @@ public class SpringConfiguration implements WebMvcConfigurer {
     public PlatformTransactionManager platformTransactionManager() {
         JpaTransactionManager jpaTransactionManager = new JpaTransactionManager();
         jpaTransactionManager.setEntityManagerFactory(entityManagerFactory().getObject());
-        jpaTransactionManager.setJpaProperties(hibernateProperties());
         return jpaTransactionManager;
     }
 
@@ -152,5 +140,14 @@ public class SpringConfiguration implements WebMvcConfigurer {
                 .addPathPatterns("/**")
                 .excludePathPatterns("/login", "/registration", "/resources/**");
     }
-}
 
+    @Bean
+    public Flyway flyway() {
+        Flyway flyway = Flyway.configure()
+                .dataSource(dataSource())
+                .locations("classpath:db/migrations")
+                .load();
+        flyway.migrate();
+        return flyway;
+    }
+}
