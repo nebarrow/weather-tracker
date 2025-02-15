@@ -23,7 +23,7 @@ public class UserPasswordAdvice {
     @ExceptionHandler(PasswordAreDifferentException.class)
     public ModelAndView handlePasswordAreDifferent(PasswordAreDifferentException e) {
         log.error("Passwords are different {}", e.getMessage());
-        return createModelAndView("sign-up", "Passwords are different", new RegistrationRequest("", "", ""));
+        return createModelAndView("sign-up", "Passwords are different", e.getRequest());
     }
 
     private ModelAndView createModelAndView(String viewName, String errorMessage, Object modelObject) {
