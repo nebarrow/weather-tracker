@@ -3,6 +3,7 @@ package com.nebarrow.weathertracker.service;
 import com.nebarrow.weathertracker.dto.request.PostUser;
 import com.nebarrow.weathertracker.dto.request.RegistrationRequest;
 import com.nebarrow.weathertracker.exception.PasswordAreDifferentException;
+import com.nebarrow.weathertracker.util.CookieUtil;
 import com.nebarrow.weathertracker.util.HashPasswordUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
@@ -39,7 +40,8 @@ public class AuthenticationService {
     public void logout(String sessionId, HttpServletResponse response) {
         try {
             sessionService.delete(UUID.fromString(sessionId));
-            sessionService.deleteSessionCookie(sessionId, response);
+            var cookie = CookieUtil.delete(UUID.fromString(sessionId));
+            response.addCookie(cookie);
         } catch (IllegalArgumentException e) {
             log.error("Session id is not valid: {}", sessionId);
             throw new RuntimeException("Session id is not valid");
