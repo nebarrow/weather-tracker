@@ -86,7 +86,7 @@ public class TestConfiguration implements WebMvcConfigurer {
     @Bean
     public WebClient webClient() {
         return WebClient.builder()
-                .baseUrl("https://api.openweathermap.org/")
+                .baseUrl("http://localhost:1082")
                 .filter(((request, next) -> {
                     URI uri = UriComponentsBuilder.fromUri(request.url())
                             .queryParam("appid", apiKey)
