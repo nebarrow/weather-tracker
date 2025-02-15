@@ -6,12 +6,14 @@ import com.nebarrow.weathertracker.model.common.Coordinate;
 import com.nebarrow.weathertracker.model.common.Description;
 import com.nebarrow.weathertracker.model.common.Sys;
 import com.nebarrow.weathertracker.model.common.Weather;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 @Setter
 @Getter
+@Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class WeatherResponseByCoordinate {
         @JsonProperty("name")

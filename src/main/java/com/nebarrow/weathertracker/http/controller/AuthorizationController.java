@@ -2,6 +2,7 @@ package com.nebarrow.weathertracker.http.controller;
 
 import com.nebarrow.weathertracker.dto.request.PostUser;
 import com.nebarrow.weathertracker.service.AuthenticationService;
+import com.nebarrow.weathertracker.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +37,7 @@ public class AuthorizationController {
                         HttpServletResponse response) {
         model.addAttribute("postUser", postUser);
 
+        
         if (result.hasErrors()) {
             return redirectToSignInPage(postUser, model);
         }
@@ -44,7 +46,9 @@ public class AuthorizationController {
             return MAIN_PAGE;
         }
 
-        authenticationService.login(postUser, response);
+        var session = authenticationService.login(postUser);
+        var cookie = CookieUtil.set(session);
+        response.addCookie(cookie);
         return MAIN_PAGE;
     }
 

@@ -1,6 +1,5 @@
 package com.nebarrow.weathertracker.util;
 
-
 import com.nebarrow.weathertracker.exception.InvalidPasswordException;
 import org.mindrot.jbcrypt.BCrypt;
 
