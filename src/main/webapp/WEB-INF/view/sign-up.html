@@ -25,7 +25,7 @@
 
     <div class="row justify-content-center">
         <div class="col-12 col-lg-4 col-md-6 col-sm-12">
-            <form th:action="@{/registration}" th:method="post" th:object="${registrationRequest}" class="mt-4">
+            <form th:action="@{/registration}" th:method="post" th:object="${registrationRequest}" id="registration-form" class="mt-4">
                 <div class="mb-3">
                     <label for="username" class="form-label">Username (Email)</label>
                     <div class="input-group has-validation">
@@ -53,6 +53,12 @@
 
                 <button type="submit" class="btn btn-primary w-100 mt-3">Sign Up</button>
                 <p class="mt-2 text-center">Already have an account? <a href="/login">Sign in here</a></p>
+                <script>
+                    document.getElementById("registration-form").addEventListener("submit", function() {
+                        let usernameField = document.getElementById("username");
+                        usernameField.value = usernameField.value.trim();
+                    });
+                </script>
             </form>
         </div>
     </div>
