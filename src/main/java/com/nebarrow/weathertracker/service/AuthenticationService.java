@@ -31,7 +31,7 @@ public class AuthenticationService {
     public void register(RegistrationRequest user) {
         if (!user.password().equals(user.repeatPassword())) {
             log.error("Passwords are different: {}, {}", user.password(), user.repeatPassword());
-            throw new PasswordAreDifferentException("Passwords are different");
+            throw new PasswordAreDifferentException("Passwords are different", user);
         }
         userService.create(new PostUser(user.username(), HashPasswordUtil.hashPassword(user.password())));
     }
