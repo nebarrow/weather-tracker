@@ -5,7 +5,6 @@ import com.nebarrow.weathertracker.mapper.SessionMapper;
 import com.nebarrow.weathertracker.model.entity.Session;
 import com.nebarrow.weathertracker.repository.SessionRepository;
 import com.nebarrow.weathertracker.util.CookieUtil;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
