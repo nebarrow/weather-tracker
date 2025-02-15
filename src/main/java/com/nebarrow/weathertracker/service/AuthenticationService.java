@@ -20,11 +20,10 @@ public class AuthenticationService {
     private final SessionService sessionService;
 
     @Transactional
-    public void login(PostUser user, HttpServletResponse response) {
+    public UUID login(PostUser user) {
         var userWithSameLogin = userService.findByLogin(user.login());
         HashPasswordUtil.checkPassword(user.password(), userWithSameLogin.password());
-        var session = sessionService.create(userWithSameLogin.id());
-        sessionService.createSessionAndAddCookie(session, response);
+        return sessionService.create(userWithSameLogin.id());
     }
 
     @Transactional
