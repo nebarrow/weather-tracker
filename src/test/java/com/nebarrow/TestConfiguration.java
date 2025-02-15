@@ -1,14 +1,8 @@
-package com.nebarrow.weathertracker.config;
+package com.nebarrow;
 
-import com.nebarrow.weathertracker.http.interceptor.AuthHandler;
 import org.flywaydb.core.Flyway;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.*;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
@@ -19,26 +13,23 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.reactive.function.client.ClientRequest;
 import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.servlet.config.annotation.*;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UriComponentsBuilder;
-import org.thymeleaf.spring6.SpringTemplateEngine;
-import org.thymeleaf.spring6.templateresolver.SpringResourceTemplateResolver;
-import org.thymeleaf.spring6.view.ThymeleafViewResolver;
 
 import javax.sql.DataSource;
 import java.net.URI;
+import java.util.Properties;
 
 @Configuration
+@Profile("application-test")
 @ComponentScan("com.nebarrow.weathertracker")
 @EnableWebMvc
 @EnableJpaRepositories("com.nebarrow.weathertracker.repository")
 @EnableTransactionManagement
+@PropertySource("classpath:application-test.properties")
 @EnableScheduling
-@EntityScan("com.nebarrow.weathertracker.model.entity")
-public class SpringConfiguration implements WebMvcConfigurer {
-
-    private final ApplicationContext applicationContext;
-    private final AuthHandler authenticationHandler;
+public class TestConfiguration implements WebMvcConfigurer {
 
     @Value("${db.url}")
     private String dbUrl;
@@ -55,37 +46,6 @@ public class SpringConfiguration implements WebMvcConfigurer {
     @Value("${openweather.api}")
     private String apiKey;
 
-    @Autowired
-    public SpringConfiguration(ApplicationContext applicationContext, AuthHandler authenticationHandler) {
-        this.applicationContext = applicationContext;
-        this.authenticationHandler = authenticationHandler;
-    }
-
-    @Bean
-    public SpringResourceTemplateResolver templateResolver() {
-        SpringResourceTemplateResolver templateResolver = new SpringResourceTemplateResolver();
-        templateResolver.setApplicationContext(applicationContext);
-        templateResolver.setPrefix("/WEB-INF/view/");
-        templateResolver.setSuffix(".html");
-        return templateResolver;
-    }
-
-    @Bean
-    public SpringTemplateEngine templateEngine() {
-        SpringTemplateEngine templateEngine = new SpringTemplateEngine();
-        templateEngine.setTemplateResolver(templateResolver());
-        templateEngine.setEnableSpringELCompiler(true);
-        return templateEngine;
-    }
-
-    @Override
-    public void configureViewResolvers(ViewResolverRegistry registry) {
-        ThymeleafViewResolver resolver = new ThymeleafViewResolver();
-        resolver.setTemplateEngine(templateEngine());
-        resolver.setCharacterEncoding("UTF-8");
-        registry.viewResolver(resolver);
-    }
-
     @Bean
     public DataSource dataSource() {
         DriverManagerDataSource dataSource = new DriverManagerDataSource();
@@ -98,20 +58,23 @@ public class SpringConfiguration implements WebMvcConfigurer {
         return dataSource;
     }
 
+    private Properties hibernateProperties() {
+        Properties properties = new Properties();
+        properties.put("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
+        properties.put("hibernate.hbm2ddl.auto", "none");
+        return properties;
+    }
+
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
         LocalContainerEntityManagerFactoryBean emf = new LocalContainerEntityManagerFactoryBean();
         emf.setDataSource(dataSource());
         emf.setPackagesToScan("com.nebarrow.weathertracker.model.entity");
         emf.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
+        emf.setJpaProperties(hibernateProperties());
         return emf;
     }
 
-    @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler("/resources/**")
-                .addResourceLocations("/resources/");
-    }
 
     @Bean(name = "transactionManager")
     public PlatformTransactionManager platformTransactionManager() {
@@ -135,18 +98,11 @@ public class SpringConfiguration implements WebMvcConfigurer {
                 .build();
     }
 
-    @Override
-    public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(authenticationHandler)
-                .addPathPatterns("/**")
-                .excludePathPatterns("/login", "/registration", "/resources/**");
-    }
-
     @Bean
     public Flyway flyway() {
         Flyway flyway = Flyway.configure()
                 .dataSource(dataSource())
-                .locations("classpath:db/migrations")
+                .locations("classpath:db/migration")
                 .load();
         flyway.migrate();
         return flyway;
