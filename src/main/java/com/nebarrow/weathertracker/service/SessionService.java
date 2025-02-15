@@ -5,6 +5,7 @@ import com.nebarrow.weathertracker.mapper.SessionMapper;
 import com.nebarrow.weathertracker.model.entity.Session;
 import com.nebarrow.weathertracker.repository.SessionRepository;
 import com.nebarrow.weathertracker.util.CookieUtil;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +22,6 @@ public class SessionService {
     private final SessionMapper sessionMapper;
     private final SessionRepository sessionRepository;
 
-    @Transactional
     public UUID create(int userId) {
         var session = Session.builder()
                 .id(UUID.randomUUID())
@@ -44,14 +44,15 @@ public class SessionService {
         sessionRepository.deleteById(id);
     }
 
-    public void createSessionAndAddCookie(UUID sessionId, HttpServletResponse response) {
-        var cookie = CookieUtil.set(sessionId);
-        response.addCookie(cookie);
-    }
-
     public void deleteSessionCookie(String sessionId, HttpServletResponse response) {
         var cookie = CookieUtil.delete(UUID.fromString(sessionId));
         response.addCookie(cookie);
+    }
+
+    public boolean isActive(UUID sessionId) {
+        return sessionRepository.findById(sessionId).filter(
+                session -> session.getExpiresAt().isAfter(LocalDateTime.now())
+        ).isPresent();
     }
 
     @Scheduled(fixedRate = 600000)
