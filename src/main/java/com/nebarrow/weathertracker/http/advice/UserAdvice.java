@@ -1,5 +1,6 @@
 package com.nebarrow.weathertracker.http.advice;
 
+import com.nebarrow.weathertracker.dto.request.PostUser;
 import com.nebarrow.weathertracker.dto.request.RegistrationRequest;
 import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.exception.UserNotFoundException;
@@ -18,7 +19,7 @@ public class UserAdvice {
     @ExceptionHandler(UserNotFoundException.class)
     public ModelAndView handleUserNotFound(UserNotFoundException e) {
         log.error("User not found {}", e.getMessage());
-        return createModelAndView("sign-in", "Invalid login or password", new User());
+        return createModelAndView("sign-in", "Invalid login or password", new PostUser("", ""));
     }
 
     @ExceptionHandler(UserAlreadyExistsException.class)
@@ -30,7 +31,7 @@ public class UserAdvice {
     private ModelAndView createModelAndView(String viewName, String errorMessage, Object modelObject) {
         ModelAndView mav = new ModelAndView(viewName);
         mav.addObject("errorMessage", errorMessage);
-        mav.addObject(modelObject instanceof User ? "user" : "registrationRequest", modelObject);
+        mav.addObject(modelObject instanceof PostUser ? "postUser" : "registrationRequest", modelObject);
         return mav;
     }
 }
