@@ -4,6 +4,7 @@ import com.nebarrow.weathertracker.dto.response.WeatherResponseByCoordinate;
 import com.nebarrow.weathertracker.exception.OpenWeatherApiException;
 import com.nebarrow.weathertracker.service.WeatherService;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -40,6 +41,13 @@ public class OpenWeatherApiServiceTest {
         ClientAndServer mockServer = ClientAndServer.startClientAndServer(1082);
         mockServerClient = new MockServerClient("localhost", mockServer.getPort());
         openWeatherApiService = new WeatherService(webClient);
+    }
+
+    @AfterEach
+    public void tearDown() {
+        if (mockServerClient != null) {
+            mockServerClient.close();
+        }
     }
 
 
