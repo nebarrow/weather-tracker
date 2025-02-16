@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.ModelAndView;
 
 @Slf4j
-@Order(3)
+@Order(4)
 @ControllerAdvice
 public class UnexpectedCaseAdvice {
 
