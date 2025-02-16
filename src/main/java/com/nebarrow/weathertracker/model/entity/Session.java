@@ -25,4 +25,8 @@ public class Session {
 
     @Column(name = "ExpiresAt")
     private LocalDateTime expiresAt;
+
+    public boolean isExpired() {
+        return LocalDateTime.now().isAfter(expiresAt);
+    }
 }

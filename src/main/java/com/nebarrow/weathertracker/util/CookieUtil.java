@@ -10,7 +10,7 @@ public class CookieUtil {
 
     public static Cookie set(UUID id) {
         Cookie cookie = new Cookie("sessionId", id.toString());
-        cookie.setMaxAge(30 * 60);
+        cookie.setMaxAge(60 * 60);
         cookie.setPath("/");
         cookie.setHttpOnly(true);
         return cookie;
