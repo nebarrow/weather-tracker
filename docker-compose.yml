@@ -1,0 +1,34 @@
+version: "3.9"
+services:
+  db:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    networks:
+      - app-network
+  app:
+    image: weather
+    container_name: weather-tracker
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
+    environment:
+      SPRING_PROFILES_ACTIVE: application-test
+      DB_HOST: db
+      DB_PORT: 5433
+      DB_NAME: ${DB_NAME}
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_URL: ${DB_URL}
+      DB_DRIVER: ${DB_DRIVER}
+      OPENWEATHER_API: ${OPENWEATHER_API}
+    networks:
+      - app-network
+networks:
+    app-network:
+        driver: bridge
