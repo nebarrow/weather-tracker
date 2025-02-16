@@ -13,6 +13,10 @@ repositories {
     maven { url 'https://repo.spring.io/snapshot' }
 }
 
+war {
+    archiveFileName = 'weather-tracker.war'
+}
+
 ext {
     junitVersion = '5.10.0'
 }
@@ -55,6 +59,9 @@ dependencies {
     // Logging
     implementation 'log4j:log4j:1.2.16'
     implementation 'org.slf4j:slf4j-api:1.7.25'
+
+    // Dotenv
+    implementation 'io.github.cdimascio:java-dotenv:5.2.2'
 
     // Security
     implementation 'org.mindrot:jbcrypt:0.4'
