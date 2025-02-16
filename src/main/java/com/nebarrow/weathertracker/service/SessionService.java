@@ -42,9 +42,9 @@ public class SessionService {
     }
 
     public boolean isActive(UUID sessionId) {
-        return sessionRepository.findById(sessionId).filter(
-                session -> session.getExpiresAt().isAfter(LocalDateTime.now())
-        ).isPresent();
+        var session = sessionRepository.findById(sessionId);
+        return session.map(s -> !s.isExpired())
+                .orElse(false);
     }
 
     @Scheduled(fixedRate = 600000)
