@@ -21,7 +21,7 @@ import java.util.Objects;
 public class WeatherService {
     private final WebClient webClient;
 
-    public WeatherResponseByCoordinate getWeatherByCoordinate(double longitude, double latitude) {
+    public WeatherByCoordinateResponse getWeatherByCoordinate(double longitude, double latitude) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("data/2.5/weather")
@@ -34,7 +34,7 @@ public class WeatherService {
                 .block();
     }
 
-    public List<WeatherResponseByName> getWeatherByName(String name) {
+    public List<WeatherByNameResponse> getWeatherByName(String name) {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String uri = UriComponentsBuilder.fromUriString("geo/1.0/direct")
                 .queryParam("q", encodedName)
@@ -47,7 +47,7 @@ public class WeatherService {
                         .uri(uri)
                         .retrieve()
                         .onStatus(HttpStatusCode::is5xxServerError, response -> Mono.error(new OpenWeatherApiException("OpenWeather API is not available")))
-                        .bodyToMono(new ParameterizedTypeReference<List<WeatherResponseByName>>() {
+                        .bodyToMono(new ParameterizedTypeReference<List<WeatherByNameResponse>>() {
                             })
                         .block());
     }

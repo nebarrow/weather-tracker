@@ -37,7 +37,7 @@ public class SearchController {
                          @RequestParam(value = "name", required = false) String name,
                          Model model, HttpServletRequest request) {
         var user = userService.findById((int) request.getAttribute("userId"));
-        List<WeatherResponseByName> weather = locationService.getWeatherByName(name, user.id());
+        List<WeatherByNameResponse> weather = locationService.getWeatherByName(name, user.id());
         locationService.save(new LocationRequest(name, user.id(), Double.parseDouble(latitude), Double.parseDouble(longitude)));
         addAttributesToModel(model, user, weather);;
         return MAIN_PAGE;

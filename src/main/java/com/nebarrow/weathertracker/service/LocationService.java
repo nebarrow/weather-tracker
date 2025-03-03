@@ -63,12 +63,12 @@ public class LocationService {
         return weathers;
     }
 
-    public List<WeatherResponseByName> getWeatherByName(String name, int userId) {
+    public List<WeatherByNameResponse> getWeatherByName(String name, int userId) {
         return weatherService.getWeatherByName(name).stream()
                 .map(weather -> {
                     var location = new LocationRequest(name, userId, Double.parseDouble(weather.latitude()), Double.parseDouble(weather.longitude()));
                     boolean isAdded = isLocationAdded(location);
-                    return new WeatherResponseByName(weather.name(), weather.latitude(), weather.longitude(), weather.country(), weather.state(), isAdded);
+                    return new WeatherByNameResponse(weather.name(), weather.latitude(), weather.longitude(), weather.country(), weather.state(), isAdded);
                 }).toList();
     }
 

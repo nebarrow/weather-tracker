@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Builder;
 
 @Builder
-public record WeatherResponseByName(@JsonProperty("name") String name,
+public record WeatherByNameResponse(@JsonProperty("name") String name,
                                     @JsonProperty("lat") String latitude,
                                     @JsonProperty("lon") String longitude,
                                     @JsonProperty("country") String country,
