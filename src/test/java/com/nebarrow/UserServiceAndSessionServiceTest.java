@@ -1,6 +1,6 @@
 package com.nebarrow;
 
-import com.nebarrow.weathertracker.dto.request.PostUser;
+import com.nebarrow.weathertracker.dto.request.PostUserRequest;
 import com.nebarrow.weathertracker.dto.request.RegistrationRequest;
 import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.model.entity.Session;
@@ -57,7 +57,7 @@ public class UserServiceAndSessionServiceTest {
     @Test
     public void SessionService_CheckCreatingSessionAfterCreatingUser_ShouldCreateSession() {
         authenticationService.register(new RegistrationRequest("test", "test", "test"));
-        var sessionId = authenticationService.login(new PostUser("test", "test"));
+        var sessionId = authenticationService.login(new PostUserRequest("test", "test"));
         var session = sessionService.findById(sessionId);
         assertNotNull(session);
     }

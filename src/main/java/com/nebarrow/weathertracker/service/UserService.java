@@ -1,7 +1,7 @@
 package com.nebarrow.weathertracker.service;
 
-import com.nebarrow.weathertracker.dto.request.PostUser;
-import com.nebarrow.weathertracker.dto.response.GetUser;
+import com.nebarrow.weathertracker.dto.request.PostUserRequest;
+import com.nebarrow.weathertracker.dto.response.GetUserResponse;
 import com.nebarrow.weathertracker.exception.UserAlreadyExistsException;
 import com.nebarrow.weathertracker.exception.UserNotFoundException;
 import com.nebarrow.weathertracker.mapper.UserMapper;
