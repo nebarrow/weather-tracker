@@ -1,8 +1,8 @@
 package com.nebarrow.weathertracker.http.controller;
 
 import com.nebarrow.weathertracker.dto.request.LocationRequest;
-import com.nebarrow.weathertracker.dto.response.GetUser;
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByName;
+import com.nebarrow.weathertracker.dto.response.GetUserResponse;
+import com.nebarrow.weathertracker.dto.response.WeatherByNameResponse;
 import com.nebarrow.weathertracker.service.LocationService;
 import com.nebarrow.weathertracker.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -43,7 +43,7 @@ public class SearchController {
         return MAIN_PAGE;
     }
 
-    private void addAttributesToModel(Model model, GetUser user, List<WeatherResponseByName> weather) {
+    private void addAttributesToModel(Model model, GetUserResponse user, List<WeatherByNameResponse> weather) {
         model.addAttribute("user", user);
         model.addAttribute("weather", weather);
     }

@@ -19,8 +19,8 @@ public class UserService {
     private final UserMapper userMapper;
 
     @Transactional
-    public GetUser create(PostUser postUser) {
-        Optional<GetUser> existingUser = userRepository.findByLogin(postUser.login()).map(userMapper::toDto);
+    public GetUserResponse create(PostUserRequest postUser) {
+        Optional<GetUserResponse> existingUser = userRepository.findByLogin(postUser.login()).map(userMapper::toDto);
         if (existingUser.isPresent()) {
             throw new UserAlreadyExistsException("User with login " + postUser.login() + " already exists");
         }
@@ -29,12 +29,12 @@ public class UserService {
     }
 
     @Transactional
-    public GetUser findById(int id) {
+    public GetUserResponse findById(int id) {
         return userRepository.findById(id).map(userMapper::toDto).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
 
     @Transactional
-    public GetUser findByLogin(String login) {
+    public GetUserResponse findByLogin(String login) {
         return userRepository.findByLogin(login).map(userMapper::toDto)
                 .orElseThrow(() -> new UserNotFoundException("User with login " + login + " not found"));
     }
