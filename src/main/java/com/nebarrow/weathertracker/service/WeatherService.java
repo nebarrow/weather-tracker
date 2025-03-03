@@ -1,7 +1,7 @@
 package com.nebarrow.weathertracker.service;
 
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByCoordinate;
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByName;
+import com.nebarrow.weathertracker.dto.response.WeatherByCoordinateResponse;
+import com.nebarrow.weathertracker.dto.response.WeatherByNameResponse;
 import com.nebarrow.weathertracker.exception.OpenWeatherApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -21,7 +21,7 @@ import java.util.Objects;
 public class WeatherService {
     private final WebClient webClient;
 
-    public WeatherResponseByCoordinate getWeatherByCoordinate(double longitude, double latitude) {
+    public WeatherByCoordinateResponse getWeatherByCoordinate(double longitude, double latitude) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("data/2.5/weather")
@@ -30,11 +30,11 @@ public class WeatherService {
                         .build())
                 .retrieve()
                 .onStatus(HttpStatusCode::is5xxServerError, response -> Mono.error(new OpenWeatherApiException("OpenWeather API is not available")))
-                .bodyToMono(WeatherResponseByCoordinate.class)
+                .bodyToMono(WeatherByCoordinateResponse.class)
                 .block();
     }
 
-    public List<WeatherResponseByName> getWeatherByName(String name) {
+    public List<WeatherByNameResponse> getWeatherByName(String name) {
         String encodedName = URLEncoder.encode(name, StandardCharsets.UTF_8);
         String uri = UriComponentsBuilder.fromUriString("geo/1.0/direct")
                 .queryParam("q", encodedName)
@@ -47,7 +47,7 @@ public class WeatherService {
                         .uri(uri)
                         .retrieve()
                         .onStatus(HttpStatusCode::is5xxServerError, response -> Mono.error(new OpenWeatherApiException("OpenWeather API is not available")))
-                        .bodyToMono(new ParameterizedTypeReference<List<WeatherResponseByName>>() {
+                        .bodyToMono(new ParameterizedTypeReference<List<WeatherByNameResponse>>() {
                             })
                         .block());
     }

@@ -1,6 +1,6 @@
 package com.nebarrow.weathertracker.http.controller;
 
-import com.nebarrow.weathertracker.dto.request.PostUser;
+import com.nebarrow.weathertracker.dto.request.PostUserRequest;
 import com.nebarrow.weathertracker.service.AuthenticationService;
 import com.nebarrow.weathertracker.util.CookieUtil;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,12 +26,12 @@ public class AuthorizationController {
 
     @GetMapping("/login")
     public String showLoginForm(Model model) {
-        return redirectToSignInPage(new PostUser("", ""), model);
+        return redirectToSignInPage(new PostUserRequest("", ""), model);
     }
 
     @PostMapping("/login")
     public String login(@CookieValue(name = "sessionId", defaultValue = "") String sessionId,
-                        @ModelAttribute @Valid PostUser postUser,
+                        @ModelAttribute @Valid PostUserRequest postUser,
                         BindingResult result,
                         Model model,
                         HttpServletResponse response) {
@@ -58,7 +58,7 @@ public class AuthorizationController {
         return SIGN_IN_REDIRECT;
     }
 
-    private String redirectToSignInPage(PostUser user, Model model) {
+    private String redirectToSignInPage(PostUserRequest user, Model model) {
         model.addAttribute("postUser", user);
         return SIGN_IN;
     }

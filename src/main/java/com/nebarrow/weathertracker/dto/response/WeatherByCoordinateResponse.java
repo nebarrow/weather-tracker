@@ -15,7 +15,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 @NoArgsConstructor
 @AllArgsConstructor
-public class WeatherResponseByCoordinate {
+public class WeatherByCoordinateResponse {
         @JsonProperty("name")
         private String name;
 

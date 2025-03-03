@@ -1,6 +1,6 @@
 package com.nebarrow.weathertracker.service;
 
-import com.nebarrow.weathertracker.dto.request.PostUser;
+import com.nebarrow.weathertracker.dto.request.PostUserRequest;
 import com.nebarrow.weathertracker.dto.request.RegistrationRequest;
 import com.nebarrow.weathertracker.exception.PasswordAreDifferentException;
 import com.nebarrow.weathertracker.util.CookieUtil;
@@ -21,7 +21,7 @@ public class AuthenticationService {
     private final SessionService sessionService;
 
     @Transactional
-    public UUID login(PostUser user) {
+    public UUID login(PostUserRequest user) {
         var userWithSameLogin = userService.findByLogin(user.login());
         HashPasswordUtil.checkPassword(user.password(), userWithSameLogin.password());
         return sessionService.create(userWithSameLogin.id());
@@ -33,7 +33,7 @@ public class AuthenticationService {
             log.error("Passwords are different: {}, {}", user.password(), user.repeatPassword());
             throw new PasswordAreDifferentException("Passwords are different", user);
         }
-        userService.create(new PostUser(user.username(), HashPasswordUtil.hashPassword(user.password())));
+        userService.create(new PostUserRequest(user.username(), HashPasswordUtil.hashPassword(user.password())));
     }
 
     @Transactional

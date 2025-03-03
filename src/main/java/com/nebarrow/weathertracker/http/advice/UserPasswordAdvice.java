@@ -1,7 +1,6 @@
 package com.nebarrow.weathertracker.http.advice;
 
-import com.nebarrow.weathertracker.dto.request.PostUser;
-import com.nebarrow.weathertracker.dto.request.RegistrationRequest;
+import com.nebarrow.weathertracker.dto.request.PostUserRequest;
 import com.nebarrow.weathertracker.exception.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.core.annotation.Order;
@@ -17,7 +16,7 @@ public class UserPasswordAdvice {
     @ExceptionHandler(InvalidPasswordException.class)
     public ModelAndView handleInvalidPassword(InvalidPasswordException e) {
         log.error("Invalid password {}", e.getMessage());
-        return createModelAndView("sign-in", "Invalid login or password", new PostUser("", ""));
+        return createModelAndView("sign-in", "Invalid login or password", new PostUserRequest("", ""));
     }
 
     @ExceptionHandler(PasswordAreDifferentException.class)
@@ -29,7 +28,7 @@ public class UserPasswordAdvice {
     private ModelAndView createModelAndView(String viewName, String errorMessage, Object modelObject) {
         ModelAndView mav = new ModelAndView(viewName);
         mav.addObject("errorMessage", errorMessage);
-        mav.addObject(modelObject instanceof PostUser ? "postUser" : "registrationRequest", modelObject);
+        mav.addObject(modelObject instanceof PostUserRequest ? "postUser" : "registrationRequest", modelObject);
         return mav;
     }
 }

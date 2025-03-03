@@ -2,8 +2,8 @@ package com.nebarrow.weathertracker.service;
 
 import com.nebarrow.weathertracker.dto.request.LocationRequest;
 import com.nebarrow.weathertracker.dto.response.LocationResponse;
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByCoordinate;
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByName;
+import com.nebarrow.weathertracker.dto.response.WeatherByCoordinateResponse;
+import com.nebarrow.weathertracker.dto.response.WeatherByNameResponse;
 import com.nebarrow.weathertracker.exception.LocationAlreadyExistsException;
 import com.nebarrow.weathertracker.exception.LocationNotFoundException;
 import com.nebarrow.weathertracker.mapper.LocationMapper;
@@ -50,9 +50,9 @@ public class LocationService {
         }
     }
 
-    public List<WeatherResponseByCoordinate> getLocationWeatherByUserId(int userId) {
+    public List<WeatherByCoordinateResponse> getLocationWeatherByUserId(int userId) {
         var locations = findByUserId(userId);
-        List<WeatherResponseByCoordinate> weathers = new ArrayList<>();
+        List<WeatherByCoordinateResponse> weathers = new ArrayList<>();
         if (!locations.isEmpty()) {
             for (var location : locations) {
                 var weather = weatherService.getWeatherByCoordinate(location.longitude(), location.latitude());
@@ -63,12 +63,12 @@ public class LocationService {
         return weathers;
     }
 
-    public List<WeatherResponseByName> getWeatherByName(String name, int userId) {
+    public List<WeatherByNameResponse> getWeatherByName(String name, int userId) {
         return weatherService.getWeatherByName(name).stream()
                 .map(weather -> {
                     var location = new LocationRequest(name, userId, Double.parseDouble(weather.latitude()), Double.parseDouble(weather.longitude()));
                     boolean isAdded = isLocationAdded(location);
-                    return new WeatherResponseByName(weather.name(), weather.latitude(), weather.longitude(), weather.country(), weather.state(), isAdded);
+                    return new WeatherByNameResponse(weather.name(), weather.latitude(), weather.longitude(), weather.country(), weather.state(), isAdded);
                 }).toList();
     }
 
