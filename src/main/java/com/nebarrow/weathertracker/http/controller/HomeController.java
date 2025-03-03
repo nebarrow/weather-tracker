@@ -1,12 +1,10 @@
 package com.nebarrow.weathertracker.http.controller;
 
-import com.nebarrow.weathertracker.dto.request.LocationRequest;
+import com.nebarrow.weathertracker.dto.request.DeleteLocationRequest;
 import com.nebarrow.weathertracker.dto.response.SessionResponse;
-import com.nebarrow.weathertracker.exception.LocationNotFoundException;
 import com.nebarrow.weathertracker.service.LocationService;
 import com.nebarrow.weathertracker.service.SessionService;
 import com.nebarrow.weathertracker.service.UserService;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,16 +39,11 @@ public class HomeController {
 
     @PostMapping("/delete")
     public String deleteLocation(@CookieValue(name = "sessionId") String sessionId,
-                                 @RequestParam("name") String name,
                                  @RequestParam("latitude") String latitude,
                                  @RequestParam("longitude") String longitude) {
         SessionResponse sessionResponse = sessionService.findById(UUID.fromString(sessionId));
         var user = userService.findById(sessionResponse.userId());
-        try {
-            locationService.delete(new LocationRequest(name, user.id(), Double.parseDouble(latitude), Double.parseDouble(longitude)));
-        } catch (LocationNotFoundException e) {
-            return ERROR_PAGE;
-        }
+        locationService.delete(new DeleteLocationRequest(user.id(), Double.parseDouble(latitude), Double.parseDouble(longitude)));
         return MAIN_PAGE_REDIRECT;
     }
 }
