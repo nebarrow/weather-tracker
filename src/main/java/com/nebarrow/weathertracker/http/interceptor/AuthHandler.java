@@ -61,8 +61,6 @@ public class AuthHandler implements HandlerInterceptor {
             sessionService.delete(UUID.fromString(sessionId));
             throw new ExpiredSessionException("Session " + sessionId + " is expired");
         }
-
-        request.setAttribute("userId", session.userId());
         return true;
     }
 
