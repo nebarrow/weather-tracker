@@ -9,6 +9,7 @@ import com.nebarrow.weathertracker.model.common.Weather;
 import lombok.*;
 
 import java.util.List;
+
 @Setter
 @Getter
 @Builder

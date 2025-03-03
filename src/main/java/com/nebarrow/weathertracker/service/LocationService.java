@@ -38,6 +38,7 @@ public class LocationService {
         }
     }
 
+    // TODO: dto как будто не для delete метода, зачем передавать имя? Если для ошибки, то в случае удаления не существующей локации можно и не выводить ошибку
     @Transactional
     public void delete(LocationRequest locationRequest) {
         BigDecimal latRounded = roundToTwoDecimals(locationRequest.latitude());

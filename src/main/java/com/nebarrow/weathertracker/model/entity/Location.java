@@ -16,6 +16,7 @@ public class Location {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
 
+    // TODO: нет ограничения не уникальность
     @Column(name = "Name")
     private String name;
 

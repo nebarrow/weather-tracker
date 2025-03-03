@@ -4,6 +4,7 @@ import com.nebarrow.weathertracker.http.interceptor.AuthHandler;
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+// TODO: вроде проект без бута должен быть
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;

@@ -25,6 +25,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String showFindForm(HttpServletRequest request, Model model) {
+        // TODO: лучше не передавать никакие данные о юзере в запросе
         var user = userService.findById((int) request.getAttribute("userId"));
         var userWeathers = locationService.getLocationWeatherByUserId(user.id());
         model.addAttribute("user", user);
