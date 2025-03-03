@@ -22,7 +22,7 @@ public class UserService {
     public GetUserResponse create(PostUserRequest postUser) {
         Optional<GetUserResponse> existingUser = userRepository.findByLogin(postUser.login()).map(userMapper::toDto);
         if (existingUser.isPresent()) {
-            throw new UserAlreadyExistsException("User with login " + postUser.login() + " already exists");
+            throw new UserAlreadyExistsException("User already exists");
         }
         var user = userMapper.toUser(postUser);
         return userMapper.toDto(userRepository.save(user));
@@ -30,12 +30,12 @@ public class UserService {
 
     @Transactional
     public GetUserResponse findById(int id) {
-        return userRepository.findById(id).map(userMapper::toDto).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
+        return userRepository.findById(id).map(userMapper::toDto).orElseThrow(() -> new UserNotFoundException("User not found"));
     }
 
     @Transactional
     public GetUserResponse findByLogin(String login) {
         return userRepository.findByLogin(login).map(userMapper::toDto)
-                .orElseThrow(() -> new UserNotFoundException("User with login " + login + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("Invalid credentials"));
     }
 }
