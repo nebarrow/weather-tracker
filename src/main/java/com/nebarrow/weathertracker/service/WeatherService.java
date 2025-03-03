@@ -1,7 +1,7 @@
 package com.nebarrow.weathertracker.service;
 
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByCoordinate;
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByName;
+import com.nebarrow.weathertracker.dto.response.WeatherByCoordinateResponse;
+import com.nebarrow.weathertracker.dto.response.WeatherByNameResponse;
 import com.nebarrow.weathertracker.exception.OpenWeatherApiException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
@@ -30,7 +30,7 @@ public class WeatherService {
                         .build())
                 .retrieve()
                 .onStatus(HttpStatusCode::is5xxServerError, response -> Mono.error(new OpenWeatherApiException("OpenWeather API is not available")))
-                .bodyToMono(WeatherResponseByCoordinate.class)
+                .bodyToMono(WeatherByCoordinateResponse.class)
                 .block();
     }
 

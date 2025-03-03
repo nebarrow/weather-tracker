@@ -1,6 +1,6 @@
 package com.nebarrow;
 
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByCoordinate;
+import com.nebarrow.weathertracker.dto.response.WeatherByCoordinateResponse;
 import com.nebarrow.weathertracker.exception.OpenWeatherApiException;
 import com.nebarrow.weathertracker.service.WeatherService;
 import jakarta.transaction.Transactional;
@@ -103,7 +103,7 @@ public class OpenWeatherApiServiceTest {
 
 
         var apiByNameResponse = openWeatherApiService.getWeatherByName("London");
-        WeatherResponseByCoordinate apiByCoordinateResponse = openWeatherApiService.getWeatherByCoordinate(
+        WeatherByCoordinateResponse apiByCoordinateResponse = openWeatherApiService.getWeatherByCoordinate(
                 Double.parseDouble(apiByNameResponse.get(1).longitude()),
                 Double.parseDouble(apiByNameResponse.get(1).latitude()));
 

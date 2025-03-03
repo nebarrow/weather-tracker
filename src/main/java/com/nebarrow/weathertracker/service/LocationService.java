@@ -2,8 +2,8 @@ package com.nebarrow.weathertracker.service;
 
 import com.nebarrow.weathertracker.dto.request.LocationRequest;
 import com.nebarrow.weathertracker.dto.response.LocationResponse;
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByCoordinate;
-import com.nebarrow.weathertracker.dto.response.WeatherResponseByName;
+import com.nebarrow.weathertracker.dto.response.WeatherByCoordinateResponse;
+import com.nebarrow.weathertracker.dto.response.WeatherByNameResponse;
 import com.nebarrow.weathertracker.exception.LocationAlreadyExistsException;
 import com.nebarrow.weathertracker.exception.LocationNotFoundException;
 import com.nebarrow.weathertracker.mapper.LocationMapper;
@@ -50,9 +50,9 @@ public class LocationService {
         }
     }
 
-    public List<WeatherResponseByCoordinate> getLocationWeatherByUserId(int userId) {
+    public List<WeatherByCoordinateResponse> getLocationWeatherByUserId(int userId) {
         var locations = findByUserId(userId);
-        List<WeatherResponseByCoordinate> weathers = new ArrayList<>();
+        List<WeatherByCoordinateResponse> weathers = new ArrayList<>();
         if (!locations.isEmpty()) {
             for (var location : locations) {
                 var weather = weatherService.getWeatherByCoordinate(location.longitude(), location.latitude());
