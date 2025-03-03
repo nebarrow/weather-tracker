@@ -24,6 +24,7 @@ public class AuthorizationController {
 
     private final AuthenticationService authenticationService;
 
+    // TODO: что будет, если авторизованный пользователь перейдет на /login?
     @GetMapping("/login")
     public String showLoginForm(Model model) {
         return redirectToSignInPage(new PostUser("", ""), model);
@@ -37,11 +38,11 @@ public class AuthorizationController {
                         HttpServletResponse response) {
         model.addAttribute("postUser", postUser);
 
-        
         if (result.hasErrors()) {
             return redirectToSignInPage(postUser, model);
         }
 
+        // TODO: а если сессия не валидная
         if (!sessionId.isEmpty()) {
             return MAIN_PAGE;
         }

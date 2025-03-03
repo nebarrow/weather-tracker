@@ -44,7 +44,7 @@ public class AuthHandler implements HandlerInterceptor {
                 .findFirst()
                 .orElse(null);
 
-
+        // TODO: идентичен предыдущей проверке, можно объединить
         if (sessionId == null) {
             response.sendRedirect(request.getContextPath() + "/login");
             return false;
@@ -62,6 +62,7 @@ public class AuthHandler implements HandlerInterceptor {
             throw new ExpiredSessionException("Session " + sessionId + " is expired");
         }
 
+        // TODO: лучше не передавать никакие данные о юзере в запросе
         request.setAttribute("userId", session.userId());
         return true;
     }

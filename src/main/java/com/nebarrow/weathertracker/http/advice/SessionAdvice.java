@@ -9,6 +9,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.io.IOException;
 
+// TODO: для чего создавать несколько адвайсов?
+
 @Slf4j
 @Order(3)
 @ControllerAdvice

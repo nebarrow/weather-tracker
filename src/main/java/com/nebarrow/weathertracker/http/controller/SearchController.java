@@ -36,6 +36,7 @@ public class SearchController {
                          @RequestParam(value = "latitude", required = false) String latitude,
                          @RequestParam(value = "name", required = false) String name,
                          Model model, HttpServletRequest request) {
+        // TODO: для метода контроллера тут очень много логики, ее лучше перенести в сервис
         var user = userService.findById((int) request.getAttribute("userId"));
         List<WeatherResponseByName> weather = locationService.getWeatherByName(name, user.id());
         locationService.save(new LocationRequest(name, user.id(), Double.parseDouble(latitude), Double.parseDouble(longitude)));

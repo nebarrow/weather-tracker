@@ -27,6 +27,7 @@ public class RegistrationController {
 
     private final AuthenticationService authenticationService;
 
+    // TODO: если перейдет авторизованный пользователь?
     @GetMapping("/registration")
     public String showRegistrationForm(Model model) {
         model.addAttribute("registrationRequest", new RegistrationRequest("", "", ""));
@@ -41,6 +42,7 @@ public class RegistrationController {
         if (result.hasErrors()) {
             return redirectToSignUpPage(request, model);
         }
+        // TODO: если сессия не валидная?
         if (!sessionId.isEmpty()) {
             return MAIN_PAGE;
         }

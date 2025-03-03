@@ -16,11 +16,13 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Objects;
 
+
 @Service
 @RequiredArgsConstructor
 public class WeatherService {
     private final WebClient webClient;
 
+    // TODO: используешь реактивный клиент, но блокируешь запрос
     public WeatherResponseByCoordinate getWeatherByCoordinate(double longitude, double latitude) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder

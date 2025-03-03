@@ -33,9 +33,10 @@ public class UserService {
         return userRepository.findById(id).map(userMapper::toDto).orElseThrow(() -> new UserNotFoundException("User with id " + id + " not found"));
     }
 
+    // TODO: в ошибках при аутентификации лучше не выводить никакой детализированной информации (чтобы не дать злоумышленникам никакой информации о наличии или отсутствии пользователя в системе)
     @Transactional
     public GetUser findByLogin(String login) {
         return userRepository.findByLogin(login).map(userMapper::toDto)
-                .orElseThrow(() -> new UserNotFoundException("User with login " + login + " not found"));
+                .orElseThrow(() -> new UserNotFoundException("Invalid credentials"));
     }
 }

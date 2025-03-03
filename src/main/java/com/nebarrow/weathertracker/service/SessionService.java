@@ -29,6 +29,8 @@ public class SessionService {
         return session.getId();
     }
 
+    //  TODO: метод CrudRepository вроде сами по себе оборачиваются в транзакцию, а тут ты используешь только один метод
+    //  TODO: как правило сервисы возвращают сущность с которой работают, так как представление (dto) не относитсяк бизнем логике
     @Transactional
     public SessionResponse findById(UUID id) {
         return sessionRepository.findById(id)
