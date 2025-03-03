@@ -33,8 +33,8 @@ public class SearchController {
     public String showSearchPage(@CookieValue(name = "sessionId") String sessionId,
                                  @RequestParam("name") String name,
                                  Model model) {
-        SessionResponse sessionResponse = sessionService.findById(UUID.fromString(sessionId));
-        var user = userService.findById(sessionResponse.userId());
+        Session session = sessionService.findById(UUID.fromString(sessionId));
+        var user = userService.findById(session.getUserId());
         var weather = locationService.getWeatherByName(name, user.id());
         addAttributesToModel(model, user, weather);
         return SEARCH_PAGE;
@@ -46,8 +46,8 @@ public class SearchController {
                          @RequestParam(value = "latitude", required = false) String latitude,
                          @RequestParam(value = "name", required = false) String name,
                          Model model) {
-        SessionResponse sessionResponse = sessionService.findById(UUID.fromString(sessionId));
-        var user = userService.findById(sessionResponse.userId());
+        Session session = sessionService.findById(UUID.fromString(sessionId));
+        var user = userService.findById(session.getUserId());
         var weather = locationService.getWeatherByName(name, user.id());
         locationService.save(new LocationRequest(name, user.id(), Double.parseDouble(latitude), Double.parseDouble(longitude)));
         addAttributesToModel(model, user, weather);

@@ -30,9 +30,8 @@ public class SessionService {
     }
 
     @Transactional
-    public SessionResponse findById(UUID id) {
+    public Session findById(UUID id) {
         return sessionRepository.findById(id)
-                .map(sessionMapper::toDto)
                 .orElse(null);
     }
 
