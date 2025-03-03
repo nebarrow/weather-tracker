@@ -29,7 +29,6 @@ public class SessionService {
         return session.getId();
     }
 
-    @Transactional
     public Session findById(UUID id) {
         return sessionRepository.findById(id)
                 .orElse(null);
@@ -47,7 +46,6 @@ public class SessionService {
     }
 
     @Scheduled(fixedRate = 600000)
-    @Transactional
     public void deleteExpiredSessions() {
         sessionRepository.deleteExpiredSessions();
     }
