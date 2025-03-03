@@ -1,5 +1,6 @@
 package com.nebarrow.weathertracker.service;
 
+import com.nebarrow.weathertracker.dto.request.DeleteLocationRequest;
 import com.nebarrow.weathertracker.dto.request.LocationRequest;
 import com.nebarrow.weathertracker.dto.response.LocationResponse;
 import com.nebarrow.weathertracker.dto.response.WeatherByCoordinateResponse;
@@ -39,15 +40,11 @@ public class LocationService {
     }
 
     @Transactional
-    public void delete(LocationRequest locationRequest) {
-        BigDecimal latRounded = roundToTwoDecimals(locationRequest.latitude());
-        BigDecimal lonRounded = roundToTwoDecimals(locationRequest.longitude());
-        try {
-            var location = locationRepository.findByUserIdAndLatitudeAndLongitude(locationRequest.userId(), latRounded.doubleValue(), lonRounded.doubleValue());
-            locationRepository.delete(location);
-        } catch (LocationNotFoundException e) {
-            throw new LocationNotFoundException("Location with name " + locationRequest.name() + " not found");
-        }
+    public void delete(DeleteLocationRequest deleteLocationRequest) {
+        var latRounded = roundToTwoDecimals(deleteLocationRequest.latitude());
+        var lonRounded = roundToTwoDecimals(deleteLocationRequest.longitude());
+        var location = locationRepository.findByUserIdAndLatitudeAndLongitude(deleteLocationRequest.userId(), latRounded.doubleValue(), lonRounded.doubleValue());
+        locationRepository.delete(location);
     }
 
     public List<WeatherByCoordinateResponse> getLocationWeatherByUserId(int userId) {
