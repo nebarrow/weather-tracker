@@ -2,6 +2,7 @@ package com.nebarrow.weathertracker.http.controller;
 
 import com.nebarrow.weathertracker.dto.request.DeleteLocationRequest;
 import com.nebarrow.weathertracker.dto.response.SessionResponse;
+import com.nebarrow.weathertracker.model.entity.Session;
 import com.nebarrow.weathertracker.service.LocationService;
 import com.nebarrow.weathertracker.service.SessionService;
 import com.nebarrow.weathertracker.service.UserService;
@@ -29,8 +30,8 @@ public class HomeController {
 
     @GetMapping("/")
     public String showFindForm(@CookieValue(name = "sessionId") String sessionId, Model model) {
-        SessionResponse sessionResponse = sessionService.findById(UUID.fromString(sessionId));
-        var user = userService.findById(sessionResponse.userId());
+        Session session = sessionService.findById(UUID.fromString(sessionId));
+        var user = userService.findById(session.getUserId());
         var userWeathers = locationService.getLocationWeatherByUserId(user.id());
         model.addAttribute("user", user);
         model.addAttribute("weathers", userWeathers);
@@ -41,8 +42,8 @@ public class HomeController {
     public String deleteLocation(@CookieValue(name = "sessionId") String sessionId,
                                  @RequestParam("latitude") String latitude,
                                  @RequestParam("longitude") String longitude) {
-        SessionResponse sessionResponse = sessionService.findById(UUID.fromString(sessionId));
-        var user = userService.findById(sessionResponse.userId());
+        Session session = sessionService.findById(UUID.fromString(sessionId));
+        var user = userService.findById(session.getUserId());
         locationService.delete(new DeleteLocationRequest(user.id(), Double.parseDouble(latitude), Double.parseDouble(longitude)));
         return MAIN_PAGE_REDIRECT;
     }
